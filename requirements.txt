@@ -1,0 +1,9 @@
+torch
+torchvision
+pillow
+opencv-python
+safetensors
+diffusers
+transformers
+sd-mecha
+textual
