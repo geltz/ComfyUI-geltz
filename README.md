@@ -54,7 +54,7 @@ Small edit of [PAG](https://arxiv.org/abs/2403.17377) with smart sigma-based sch
 
 **Quantile Match Scaling**	
 
-Stabilizes generation by matching frequency-band quantiles to conditional distribution.	
+Stabilizes guidance by matching frequency-band quantiles to conditional distribution.	
 
 **SADA Model Acceleration**	
 
@@ -87,6 +87,7 @@ Strengthens prompt adherence by nudging CLIP embeddings toward soft top-k neighb
 
 Reduces over-brightening in v-prediction models via epsilon scaling adaptation.  
 *Based on [Elucidating the Exposure Bias in Diffusion Models](https://arxiv.org/abs/2308.15321)*	
+
 
 
 
