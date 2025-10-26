@@ -62,7 +62,7 @@ Visualizes token influence via 2D wave path with normalized spikes.
 Strengthens prompt adherence by nudging CLIP embeddings toward soft top-k neighbor blends.  
 *Inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI)*	
 
-**Velocity Scaling**	
+**Velocity Scaling**  
+
 Reduces over-brightening in v-prediction models via epsilon scaling adaptation.  
 *Based on [Elucidating the Exposure Bias in Diffusion Models](https://arxiv.org/abs/2308.15321)*	
-
