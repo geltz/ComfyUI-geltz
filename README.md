@@ -2,7 +2,7 @@
 
 **CLIP NegPip+**  
 
-Allows using negative weights in positive cond. Adds orthogonal decomposition and smooth weight handling. Use by weighting tokens negatively, i.e. `(outdoors,:-1.05)`. Original from [ppm](https://github.com/pamparamm/ComfyUI-ppm).  
+Allows using negative weights in positive cond. Adds orthogonal decomposition and smooth weight handling. Use by weighting tokens negatively, i.e. `(sky,:-1.05)`. Original from [ppm](https://github.com/pamparamm/ComfyUI-ppm).  
 
 **Color Palette Extractor**	
 
@@ -82,6 +82,7 @@ Strengthens prompt adherence by nudging CLIP embeddings toward soft top-k neighb
 
 Reduces over-brightening in v-prediction models via epsilon scaling adaptation.  
 *Based on [Elucidating the Exposure Bias in Diffusion Models](https://arxiv.org/abs/2308.15321)*	
+
 
 
 
