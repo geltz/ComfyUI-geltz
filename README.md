@@ -21,6 +21,10 @@ Fast edge-preserving filter selecting mean color from the minimum-variance quadr
 
 Global edge-aware smoothing that flattens regions while preserving sharp boundaries.	
 
+**Load LoRA (SDXL Blocks)**  
+
+Allows setting block weights for an SDXL LoRA. Useful to avoid structural changes but keep the style i.e. only weighting input blocks.  
+
 **LoRA Extract**  
 
 Extracts the difference between two models as a LoRA with adjustable rank.  
@@ -83,6 +87,7 @@ Strengthens prompt adherence by nudging CLIP embeddings toward soft top-k neighb
 
 Reduces over-brightening in v-prediction models via epsilon scaling adaptation.  
 *Based on [Elucidating the Exposure Bias in Diffusion Models](https://arxiv.org/abs/2308.15321)*	
+
 
 
 
