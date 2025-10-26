@@ -18,7 +18,7 @@ Global edge-aware smoothing that flattens regions while preserving sharp boundar
 
 **LoRA Extract**  
 
-Extract the difference between two models as a LoRA with adjustable rank.  
+Extracts the difference between two models as a LoRA with adjustable rank.  
 *Uses the [sd-mecha](https://github.com/ljleb/sd-mecha) API*  
 
 **Load Image With Metadata**	
@@ -78,6 +78,7 @@ Strengthens prompt adherence by nudging CLIP embeddings toward soft top-k neighb
 
 Reduces over-brightening in v-prediction models via epsilon scaling adaptation.  
 *Based on [Elucidating the Exposure Bias in Diffusion Models](https://arxiv.org/abs/2308.15321)*	
+
 
 
 
