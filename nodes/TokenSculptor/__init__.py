@@ -130,7 +130,7 @@ def tokensculptor_tokens_minimal(clip, text, sculpt_strength):
                 tokens[branch][x][y] = (new_vec, attn)
     return tokens
 
-class tokensculptor:
+class TokenSculptor:
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -164,3 +164,4 @@ def add_to_first_if_shorter(conditioning1, conditioning2, x=0):
 
 NODE_CLASS_MAPPINGS = {"TokenSculptor": TokenSculptor}
 NODE_DISPLAY_NAME_MAPPINGS = {"TokenSculptor": "Token Sculptor"}
+
