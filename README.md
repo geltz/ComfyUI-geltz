@@ -12,9 +12,14 @@ Reads PNG/TIFF info and outputs normalized prompt/settings summary as a single s
 
 Fast edge-preserving filter selecting mean color from the minimum-variance quadrant.	
 
-**L₀ Gradient Minimization**	
+**L₀ Smoothing Filter**	
 
 Global edge-aware smoothing that flattens regions while preserving sharp boundaries.	
+
+**LoRA Extract**  
+
+Extract the difference between two models as a LoRA with adjustable rank.  
+*Uses the [sd-mecha](https://github.com/ljleb/sd-mecha) API*  
 
 **Load Image With Metadata**	
 
@@ -73,11 +78,6 @@ Strengthens prompt adherence by nudging CLIP embeddings toward soft top-k neighb
 
 Reduces over-brightening in v-prediction models via epsilon scaling adaptation.  
 *Based on [Elucidating the Exposure Bias in Diffusion Models](https://arxiv.org/abs/2308.15321)*	
-
-
-
-
-
 
 
 
