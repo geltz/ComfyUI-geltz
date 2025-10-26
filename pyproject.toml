@@ -5,7 +5,7 @@ version = "1.0.0"
 license = { file = "LICENSE" }
 
 [project.urls]
-Repository = "https://github.com/geltz/ComfyUI-geltz"
+Repository = "https://github.com/geltz/comfyui-geltz"
 
 [tool.comfy]
 PublisherId = "geltz"
