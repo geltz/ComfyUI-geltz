@@ -1,4 +1,4 @@
-## comfyui-geltz
+## random nodes
 
 **Color Palette Extractor**	
 
@@ -73,6 +73,7 @@ Strengthens prompt adherence by nudging CLIP embeddings toward soft top-k neighb
 
 Reduces over-brightening in v-prediction models via epsilon scaling adaptation.  
 *Based on [Elucidating the Exposure Bias in Diffusion Models](https://arxiv.org/abs/2308.15321)*	
+
 
 
 
