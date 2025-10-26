@@ -33,6 +33,7 @@ Direction-aware model merger decomposing deltas into parallel/orthogonal compone
 *Uses the [sd-mecha](https://github.com/ljleb/sd-mecha) API*	
 
 **Perturbed Attention Delta**  
+
 Small edit of [PAG](https://arxiv.org/abs/2403.17377) with smart sigma-based scheduling.	
 
 **Quantile Match Scaling**	
@@ -70,4 +71,5 @@ Strengthens prompt adherence by nudging CLIP embeddings toward soft top-k neighb
 
 Reduces over-brightening in v-prediction models via epsilon scaling adaptation.  
 *Based on [Elucidating the Exposure Bias in Diffusion Models](https://arxiv.org/abs/2308.15321)*	
+
 
