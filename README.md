@@ -1,4 +1,4 @@
-Miscellaneous nodes without order.
+Assorted nodes without order. Install by cloning to `custom_nodes`.
 
 ---
 
@@ -75,6 +75,7 @@ Strengthens prompt adherence by nudging CLIP embeddings toward soft top-k neighb
 
 Reduces over-brightening in v-prediction models via epsilon scaling adaptation.  
 *Based on [Elucidating the Exposure Bias in Diffusion Models](https://arxiv.org/abs/2308.15321)*	
+
 
 
 
