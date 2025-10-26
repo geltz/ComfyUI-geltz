@@ -24,8 +24,7 @@ Halo-free detail/tone manipulation via Laplacian pyramids with separable Gaussia
 
 **Kohya Lora Config**	
 
-Parses a LoRA's header and extracts human-readable metadata as JSON.	
-
+Parses a LoRA's header and extracts human-readable metadata as JSON.  
 *Output compatible with [Kohya's sd-scripts](https://github.com/kohya-ss/sd-scripts)*	
 
 **ORBIT Merge**	
@@ -66,3 +65,4 @@ Strengthens prompt adherence by nudging CLIP embeddings toward soft top-k neighb
 **Velocity Scaling**	
 Reduces over-brightening in v-prediction models via epsilon scaling adaptation.  
 *Based on [Elucidating the Exposure Bias in Diffusion Models](https://arxiv.org/abs/2308.15321)*	
+
