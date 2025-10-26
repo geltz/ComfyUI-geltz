@@ -44,6 +44,10 @@ Stabilizes generation by matching frequency-band quantiles to conditional distri
 Skips redundant diffusion steps using trajectory stability analysis for faster sampling.  
 *Based on [Stability-guided Adaptive Diffusion Acceleration](https://arxiv.org/abs/2507.17135)*	
 
+**Structured Latent**  
+
+Generate seeded empty latents with various initialization methods (perlin, gaussian, fractal, etc.)  
+
 **Temperature Adjust**	
 
 LAB-space white-balance adjustment with HSV saturation compensation, range -1.0…+1.0.	
@@ -66,3 +70,4 @@ Strengthens prompt adherence by nudging CLIP embeddings toward soft top-k neighb
 
 Reduces over-brightening in v-prediction models via epsilon scaling adaptation.  
 *Based on [Elucidating the Exposure Bias in Diffusion Models](https://arxiv.org/abs/2308.15321)*	
+
