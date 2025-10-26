@@ -1,6 +1,6 @@
 [project]
 name = "ComfyUI-geltz"
-description = ""
+description = "some nodes"
 version = "1.0.0"
 license = { file = "LICENSE" }
 
