@@ -41,18 +41,20 @@ def extract_lora_weights(diff: Tensor, rank: int, *, svd_mode: str = "lowrank",
             else:
                 x = x.squeeze()
 
-        # Do SVD on chosen device to control VRAM use.
         x = x.to(device=device, dtype=torch.float32, copy=True)
+        
+        # Check for non-finite values and replace with zeros
+        if not torch.isfinite(x).all():
+            print(f"   Warning: Non-finite values detected, replacing with zeros")
+            x = torch.nan_to_num(x, nan=0.0, posinf=0.0, neginf=0.0)
 
         try:
             if svd_mode == "lowrank" and r < min(out_dim, in_dim) and hasattr(torch.linalg, "svd_lowrank"):
                 q = min(r + oversample, min(out_dim, in_dim))
                 U, S, V = torch.linalg.svd_lowrank(x, q=q, niter=2)
                 Vh = V.T
-                # Truncate to target rank
                 U, S, Vh = U[:, :r], S[:r], Vh[:r, :]
             else:
-                # On CUDA prefer gesvd for stability; on CPU let PyTorch choose.
                 kwargs = {"driver": "gesvd"} if device == "cuda" else {}
                 U, S, Vh = torch.linalg.svd(x, **kwargs)
                 U, S, Vh = U[:, :r], S[:r], Vh[:r, :]
@@ -60,10 +62,8 @@ def extract_lora_weights(diff: Tensor, rank: int, *, svd_mode: str = "lowrank",
             U, S, Vh = torch.linalg.svd(x)
             U, S, Vh = U[:, :r], S[:r], Vh[:r, :]
 
-        # U = U @ diag(S) → broadcast to avoid allocating a big diag
         U = U * S.unsqueeze(0)
 
-        # Clamp without concatenating U and Vh (saves memory)
         hi_u = torch.quantile(U.abs().reshape(-1), quantile)
         hi_v = torch.quantile(Vh.abs().reshape(-1), quantile)
         hi_val = float(max(hi_u, hi_v))
@@ -74,7 +74,6 @@ def extract_lora_weights(diff: Tensor, rank: int, *, svd_mode: str = "lowrank",
         if device == "cuda":
             torch.cuda.empty_cache()
 
-        # Reshape back and immediately downcast + move to CPU for storage
         if conv2d:
             U = U.reshape(out_dim, r, 1, 1).to(dtype=torch.float16, device="cpu", copy=False)
             Vh = Vh.reshape(r, in_dim, kernel_size[0], kernel_size[1]).to(dtype=torch.float16, device="cpu", copy=False)
