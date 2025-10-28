@@ -63,7 +63,7 @@ class StructuredLatent:
     }
 
   RETURN_TYPES = ("LATENT", "INT", "INT")
-  RETURN_NAMES = ("LATENT", "CLIP_WIDTH", "CLIP_HEIGHT")
+  RETURN_NAMES = ("latent", "width", "height")
   FUNCTION = "generate"
 
   def generate_perlin_noise(self, shape, scale=10):
