@@ -58,9 +58,13 @@ class TokenDeltaPerturbation:
     FUNCTION = "patch"
     CATEGORY = "model_patches/unet"
 
-    def patch(self, model: ModelPatcher, scale: float, min_scale: float = 1.0, unet_block_list: str = "d2.2-9,d3"):
-        if unet_block_list and "-d" in unet_block_list and "," not in unet_block_list:
-            unet_block_list = unet_block_list.replace("-d", ",d")
+        def patch(self, model: ModelPatcher, scale: float, min_scale: float = 1.0, unet_block_list: str = "d2.2-9,d3"):
+            # Input validation
+            if min_scale > scale:
+                raise ValueError("min_scale should be less than or equal to scale")
+            
+            if unet_block_list and "-d" in unet_block_list and "," not in unet_block_list:
+                unet_block_list = unet_block_list.replace("-d", ",d")
 
         m = model.clone()
         inner_model: BaseModel = m.model
@@ -80,12 +84,12 @@ class TokenDeltaPerturbation:
         state = {"sigma_start": None}
 
         def _effective_scale(sig_val: float, start: float) -> float:
-            # Cosine decay: w goes 1 -> 0 across the schedule; floor at min_scale
             if start is None or start <= 1e-6:
                 return scale
             t = max(0.0, min(1.0, sig_val / start))
-            w = 0.5 * (1.0 + math.cos(math.pi * (1.0 - t)))  # 1 at start, 0 near end
-            return float(min_scale + (scale - min_scale) * w)
+            # Fix: Use (1-t) to decay from scale -> min_scale instead of min_scale -> scale
+            w = 0.5 * (1.0 + math.cos(math.pi * t))  # 1 at start, 0 near end
+            return float(scale + (min_scale - scale) * w)
 
         def post_cfg_function(args):
             model: BaseModel = args["model"]
