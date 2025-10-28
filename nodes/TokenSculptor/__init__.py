@@ -142,7 +142,7 @@ class TokenSculptor:
         }
 
     RETURN_TYPES = ("CONDITIONING", "STRING")
-    RETURN_NAMES = ("Conditioning", "Params")
+    RETURN_NAMES = ("conditioning", "parameters")
     FUNCTION = "exec"
     CATEGORY = "conditioning"
 
