@@ -58,13 +58,13 @@ class TokenDeltaPerturbation:
     FUNCTION = "patch"
     CATEGORY = "model_patches/unet"
 
-        def patch(self, model: ModelPatcher, scale: float, min_scale: float = 1.0, unet_block_list: str = "d2.2-9,d3"):
-            # Input validation
-            if min_scale > scale:
-                raise ValueError("min_scale should be less than or equal to scale")
-            
-            if unet_block_list and "-d" in unet_block_list and "," not in unet_block_list:
-                unet_block_list = unet_block_list.replace("-d", ",d")
+    def patch(self, model: ModelPatcher, scale: float, min_scale: float = 1.0, unet_block_list: str = "d2.2-9,d3"):
+        # Input validation
+        if min_scale > scale:
+            raise ValueError("min_scale should be less than or equal to scale")
+        
+        if unet_block_list and "-d" in unet_block_list and "," not in unet_block_list:
+            unet_block_list = unet_block_list.replace("-d", ",d")
 
         m = model.clone()
         inner_model: BaseModel = m.model
