@@ -62,7 +62,6 @@ def encode_token_weights_negpip_plus(self: SDClipModel, token_weight_pairs):
                 for j in range(len(zk[i])):
                     weight = token_weight_pairs[k][j][1]
                     if weight != 1.0:
-                        # reduce negatives
                         if weight < 0:
                             weight = 1.0 / (1.0 + abs(weight))
                             zv[i][j] = (zv[i][j] - z_empty[j]) * weight + z_empty[j]
@@ -70,27 +69,21 @@ def encode_token_weights_negpip_plus(self: SDClipModel, token_weight_pairs):
                             zk[i][j] = (zk[i][j] - z_empty[j]) * weight + z_empty[j]
                             zv[i][j] = (zv[i][j] - z_empty[j]) * weight + z_empty[j]
         
-        # Orthogonal decomposition (improvement: decorrelate k/v further)
-        dim = zk.shape[-1]
-        mid_dim = dim // 2
-        zk_rot = zk.clone()
-        zv_rot = zv.clone()
+        # Weak decorrelation: add perpendicular component without destroying structure
+        alpha = 0.1
+        zk_mean = zk.mean(dim=1, keepdim=True)
+        zv_mean = zv.mean(dim=1, keepdim=True)
+        zk_centered = zk - zk_mean
+        zv_centered = zv - zv_mean
         
-        # Rotation applied post-weight to preserve sign structure
-        theta = torch.linspace(0, torch.pi / 16, zk.shape[1], device=zk.device)
-        cos_t = torch.cos(theta).view(1, -1, 1)
-        sin_t = torch.sin(theta).view(1, -1, 1)
-        
-        zk_rot[..., :mid_dim] = zk[..., :mid_dim] * cos_t - zk[..., mid_dim:] * sin_t
-        zk_rot[..., mid_dim:] = zk[..., :mid_dim] * sin_t + zk[..., mid_dim:] * cos_t
-        
-        zv_rot[..., :mid_dim] = zv[..., :mid_dim] * cos_t + zv[..., mid_dim:] * sin_t
-        zv_rot[..., mid_dim:] = -zv[..., :mid_dim] * sin_t + zv[..., mid_dim:] * cos_t
+        correlation = torch.bmm(zv_centered.transpose(1, 2), zk_centered) / (zk.shape[1] + 1e-8)
+        zv_correction = torch.bmm(zk_centered, correlation) * alpha
+        zv = zv - zv_correction
 
-        z = torch.zeros_like(zk_rot).repeat(1, 2, 1)
-        for i in range(zk_rot.shape[1]):
-            z[:, 2 * i, :] += zk_rot[:, i, :]
-            z[:, 2 * i + 1, :] += zv_rot[:, i, :]
+        z = torch.zeros_like(zk).repeat(1, 2, 1)
+        for i in range(zk.shape[1]):
+            z[:, 2 * i, :] += zk[:, i, :]
+            z[:, 2 * i + 1, :] += zv[:, i, :]
         output.append(z)
 
     if len(output) == 0:
@@ -164,6 +157,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "CLIPNegPipPlus": "CLIP NegPip+",
 
 }
+
 
 
 
