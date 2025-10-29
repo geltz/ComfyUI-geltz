@@ -73,24 +73,31 @@ def encode_token_weights_negpip_plus(
         zk = out[k:k+1].clone()
         zv = out[k:k+1].clone()
         
-        if has_weights:
-            z_empty = out[-1]
-            for i in range(len(zk)):
-                for j in range(len(zk[i])):
-                    weight = token_weight_pairs[k][j][1]
-                    if weight == 1.0:
-                        continue
+    if has_weights:
+        z_empty = out[-1]
+        for i in range(len(zk)):
+            for j in range(len(zk[i])):
+                weight = token_weight_pairs[k][j][1]
+                if weight == 1.0:
+                    continue
                     
-                    z_empty_j = z_empty[0, j]
-                    zk_ij = zk[i][j]
-                    zv_ij = zv[i][j]
-                    dev_k = zk_ij - z_empty_j
-                    dev_v = zv_ij - z_empty_j
+                z_empty_j = z_empty[0, j]
+                zk_ij = zk[i][j]
+                zv_ij = zv[i][j]
+                dev_k = zk_ij - z_empty_j
+                dev_v = zv_ij - z_empty_j
+                
+                if weight < 0:
+                    # Actively reduce: amplify key for attention, invert/amplify value for opposition
+                    weight_mag = abs(weight) * alpha
+                    sign = -1
+                else:
+                    # Amplify/attenuate positive
+                    weight_mag = weight
+                    sign = 1
                     
-                    if weight < 0:
-                        # Remove negative: set key and value to empty (no contribution)
-                        zk[i][j] = z_empty_j
-                        zv[i][j] = z_empty_j
+                zk[i][j] = z_empty_j + dev_k * weight_mag
+                zv[i][j] = sign * (z_empty_j + dev_v * weight_mag)
 
         # Interleave k and v: [k0, v0, k1, v1, ...]
         z = torch.zeros(zk.shape[0], zk.shape[1] * 2, zk.shape[2], device=zk.device, dtype=zk.dtype)
@@ -167,4 +174,5 @@ class CLIPNegPipPlus(ComfyNodeABC):
 
 NODE_CLASS_MAPPINGS = {"CLIPNegPipPlus": CLIPNegPipPlus}
 NODE_DISPLAY_NAME_MAPPINGS = {"CLIPNegPipPlus": "CLIP NegPip+"}
+
 
