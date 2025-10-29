@@ -10,7 +10,7 @@ from comfy.model_patcher import ModelPatcher
 from comfy.sd import CLIP
 from comfy.sd1_clip import SDClipModel, gen_empty_tokens
 
-NEGPIP_PLUS_OPTION = "ppm_negpip_plus"
+NEGPIP_PLUS_OPTION = "negpip_plus"
 SUPPORTED_ENCODERS = ["clip_g", "clip_l", "t5xxl", "llama"]
 
 
@@ -167,3 +167,4 @@ class CLIPNegPipPlus(ComfyNodeABC):
 
 NODE_CLASS_MAPPINGS = {"CLIPNegPipPlus": CLIPNegPipPlus}
 NODE_DISPLAY_NAME_MAPPINGS = {"CLIPNegPipPlus": "CLIP NegPip+"}
+
