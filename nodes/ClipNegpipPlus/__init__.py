@@ -83,10 +83,13 @@ def encode_token_weights_negpip_plus(
                     
                     # Apply weight to keys
                     if weight < 0:
-                        # Suppress negative: reduce key magnitude, invert value with damping
+                        # Suppress negative: push key toward empty (low attention), zero out value
                         weight_abs = abs(weight)
-                        zk[i][j] = z_empty[j] + (zk[i][j] - z_empty[j]) * (weight_abs / alpha)
-                        zv[i][j] = z_empty[j] - (zv[i][j] - z_empty[j]) * weight_abs
+                        # Exponential decay toward empty reduces attention score
+                        decay = torch.exp(torch.tensor(-weight_abs * alpha))
+                        zk[i][j] = z_empty[j] + (zk[i][j] - z_empty[j]) * decay
+                        # Zero out value so even if attended, contributes nothing
+                        zv[i][j] = z_empty[j]
                     else:
                         # Amplify positive normally
                         zk[i][j] = z_empty[j] + (zk[i][j] - z_empty[j]) * weight
@@ -167,4 +170,3 @@ class CLIPNegPipPlus(ComfyNodeABC):
 
 NODE_CLASS_MAPPINGS = {"CLIPNegPipPlus": CLIPNegPipPlus}
 NODE_DISPLAY_NAME_MAPPINGS = {"CLIPNegPipPlus": "CLIP NegPip+"}
-
