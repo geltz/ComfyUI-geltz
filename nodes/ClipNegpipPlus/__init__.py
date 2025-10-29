@@ -6,17 +6,9 @@ import torch
 
 from comfy import model_management
 from comfy.comfy_types.node_typing import IO, ComfyNodeABC, InputTypeDict
-from comfy.model_base import Flux, HunyuanVideo
 from comfy.model_patcher import ModelPatcher
 from comfy.sd import CLIP
 from comfy.sd1_clip import SDClipModel, gen_empty_tokens
-
-from ..compat.advanced_encode import patch_adv_encode
-from ..dit.flux_negpip import flux_forward_orig_negpip
-from ..dit.hunyuan_video_negpip import (
-    hunyuan_video_clip_encode_token_weights_negpip,
-    hunyuan_video_forward_orig_negpip,
-)
 
 NEGPIP_PLUS_OPTION = "negpip_plus"
 SUPPORTED_ENCODERS = [
@@ -177,8 +169,6 @@ class CLIPNegPipPlus(ComfyNodeABC):
         if len(encoders) == 0:
             return (m, c)
 
-        patch_adv_encode()
-
         if not has_negpip_plus(model_options):
             for encoder in encoders:
                 c.patcher.add_object_patch(
@@ -195,27 +185,8 @@ class CLIPNegPipPlus(ComfyNodeABC):
             m.set_model_attn2_patch(negpip_attn)
             model_options[NEGPIP_PLUS_OPTION] = True
             clip_options[NEGPIP_PLUS_OPTION] = True
-            self.patch_dit(m, c)
 
         return (m, c)
-
-    @staticmethod
-    def patch_dit(m: ModelPatcher, c: CLIP):
-        diffusion_model = type(m.model)
-
-        if issubclass(diffusion_model, Flux):
-            m.add_object_patch(
-                "diffusion_model.forward_orig", partial(flux_forward_orig_negpip, m.model.diffusion_model)
-            )
-        if issubclass(diffusion_model, HunyuanVideo):
-            c.patcher.add_object_patch(
-                "encode_token_weights",
-                partial(hunyuan_video_clip_encode_token_weights_negpip, c.patcher.model),
-            )
-            m.add_object_patch(
-                "diffusion_model.forward_orig",
-                partial(hunyuan_video_forward_orig_negpip, m.model.diffusion_model),
-            )
 
 
 NODE_CLASS_MAPPINGS = {
@@ -225,4 +196,3 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "CLIPNegPipPlus": "CLIP NegPip+",
 }
-
