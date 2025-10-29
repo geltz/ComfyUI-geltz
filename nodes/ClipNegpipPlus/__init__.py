@@ -81,19 +81,23 @@ def encode_token_weights_negpip_plus(
                     if weight == 1.0:
                         continue
                     
-                    # Apply weight to keys
+                    z_empty_j = z_empty[0, j]
+                    zk_ij = zk[i][j]
+                    zv_ij = zv[i][j]
+                    dev_k = zk_ij - z_empty_j
+                    dev_v = zv_ij - z_empty_j
+                    
                     if weight < 0:
-                        # Suppress negative: push key toward empty (low attention), zero out value
+                        # Suppress negative: push key toward empty (low attention), scale value toward empty
                         weight_abs = abs(weight)
                         # Exponential decay toward empty reduces attention score
                         decay = torch.exp(torch.tensor(-weight_abs * alpha))
-                        zk[i][j] = z_empty[j] + (zk[i][j] - z_empty[j]) * decay
-                        # Zero out value so even if attended, contributes nothing
-                        zv[i][j] = z_empty[j]
+                        zk[i][j] = z_empty_j + dev_k * decay
+                        zv[i][j] = z_empty_j + dev_v * decay
                     else:
                         # Amplify positive normally
-                        zk[i][j] = z_empty[j] + (zk[i][j] - z_empty[j]) * weight
-                        zv[i][j] = z_empty[j] + (zv[i][j] - z_empty[j]) * weight
+                        zk[i][j] = z_empty_j + dev_k * weight
+                        zv[i][j] = z_empty_j + dev_v * weight
 
         # Interleave k and v: [k0, v0, k1, v1, ...]
         z = torch.zeros(zk.shape[0], zk.shape[1] * 2, zk.shape[2], device=zk.device, dtype=zk.dtype)
