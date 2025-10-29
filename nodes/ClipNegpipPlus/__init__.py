@@ -24,31 +24,7 @@ def has_negpip_plus(model_options: dict):
     return model_options.get(NEGPIP_PLUS_OPTION, False)
 
 
-def negpip_plus_attn(q, k, v, extra_options):
-    k_extracted = k[:, 0::2]
-    v_extracted = v[:, 1::2]
-    
-    # Negate the v values (which came from negative tokens)
-    v_extracted = -v_extracted
-    
-    return q, k_extracted, v_extracted
-    
-    # Optional soft mixing for gradient stability (default: pure negpip)
-    mix_ratio = extra_options.get("negpip_mix_ratio", 0.0)
-    if mix_ratio > 0:
-        k_extracted = (1 - mix_ratio) * k_extracted + mix_ratio * k[:, 0::2]
-        v_extracted = (1 - mix_ratio) * v_extracted + mix_ratio * v[:, 0::2]
-    
-    return q, k_extracted, v_extracted
-
-
 def encode_token_weights_negpip_plus(self: SDClipModel, token_weight_pairs):
-    """
-    NegPip+ encoding with:
-    - Smooth tanh-based weight interpolation
-    - Orthogonal rotation-based k/v decomposition
-    - Centered weight application
-    """
     to_encode = list()
     max_token_len = 0
     has_weights = False
@@ -76,63 +52,46 @@ def encode_token_weights_negpip_plus(self: SDClipModel, token_weight_pairs):
 
     output = []
     
-    for k_idx in range(0, sections):
-        z_base = out[k_idx : k_idx + 1].clone()
+    for k in range(0, sections):
+        zk = out[k : k + 1].clone()
+        zv = out[k : k + 1].clone()
         
         if has_weights:
             z_empty = out[-1]
-            
-            # Process key embeddings
-            zk = z_base.clone()
-            zv = z_base.clone()
-
-            # Skip negative weights
-            for i in range(len(z_base)):
-                for j in range(len(z_base[i])):
-                    weight = token_weight_pairs[k_idx][j][1]
-                    if weight < 0:
-                        zk[i][j] = z_empty[j]
-                        zv[i][j] = z_empty[j]
-                    elif weight != 1.0:
-                        w_eff = abs(weight)
-                        zk[i][j] = (zk[i][j] - z_empty[j]) * w_eff + z_empty[j]
-                        zv[i][j] = (zv[i][j] - z_empty[j]) * w_eff + z_empty[j]
-            
-            z_weighted = zk  # Use zk as base for rotation
-        else:
-            z_weighted = z_base
+            for i in range(len(zk)):
+                for j in range(len(zk[i])):
+                    weight = token_weight_pairs[k][j][1]
+                    if weight != 1.0:
+                        if weight < 0:
+                            weight = -weight
+                            sign = -1
+                        else:
+                            sign = 1
+                        zk[i][j] = (zk[i][j] - z_empty[j]) * weight + z_empty[j]
+                        zv[i][j] = sign * ((zv[i][j] - z_empty[j]) * weight + z_empty[j])
         
-        # Orthogonal decomposition using rotation
-        dim = z_weighted.shape[-1]
-        device = z_weighted.device
-        
-        # Position-dependent rotation angles (smaller for stability)
-        theta = torch.linspace(0, torch.pi / 8, z_weighted.shape[1], device=device)
-        cos_theta = torch.cos(theta).unsqueeze(-1).unsqueeze(0)
-        sin_theta = torch.sin(theta).unsqueeze(-1).unsqueeze(0)
-        
-        # Create orthogonal k and v projections
+        # Orthogonal decomposition (improvement: decorrelate k/v further)
+        dim = zk.shape[-1]
         mid_dim = dim // 2
-        z_k_rot = z_weighted.clone()
-        z_v_rot = zv if has_weights else z_weighted.clone()
+        zk_rot = zk.clone()
+        zv_rot = zv.clone()
         
-        # Rotation-based orthogonal decomposition (applied to both k and v separately)
-        z_k_rot[..., :mid_dim] = z_weighted[..., :mid_dim] * cos_theta - z_weighted[..., mid_dim:] * sin_theta
-        z_k_rot[..., mid_dim:] = z_weighted[..., :mid_dim] * sin_theta + z_weighted[..., mid_dim:] * cos_theta
+        # Rotation applied post-weight to preserve sign structure
+        theta = torch.linspace(0, torch.pi / 16, zk.shape[1], device=zk.device)
+        cos_t = torch.cos(theta).view(1, -1, 1)
+        sin_t = torch.sin(theta).view(1, -1, 1)
         
-        z_v_rot[..., :mid_dim] = z_v_rot[..., :mid_dim] * cos_theta + z_v_rot[..., mid_dim:] * sin_theta
-        z_v_rot[..., mid_dim:] = -z_v_rot[..., :mid_dim] * sin_theta + z_v_rot[..., mid_dim:] * cos_theta
+        zk_rot[..., :mid_dim] = zk[..., :mid_dim] * cos_t - zk[..., mid_dim:] * sin_t
+        zk_rot[..., mid_dim:] = zk[..., :mid_dim] * sin_t + zk[..., mid_dim:] * cos_t
         
-        z_k = z_k_rot
-        z_v = z_v_rot
-        
-        # Interleave k and v
-        z_interleaved = torch.zeros(z_k.shape[0], z_k.shape[1] * 2, z_k.shape[2], 
-                                     device=z_k.device, dtype=z_k.dtype)
-        z_interleaved[:, 0::2, :] = z_k
-        z_interleaved[:, 1::2, :] = z_v
-        
-        output.append(z_interleaved)
+        zv_rot[..., :mid_dim] = zv[..., :mid_dim] * cos_t + zv[..., mid_dim:] * sin_t
+        zv_rot[..., mid_dim:] = -zv[..., :mid_dim] * sin_t + zv[..., mid_dim:] * cos_t
+
+        z = torch.zeros_like(zk_rot).repeat(1, 2, 1)
+        for i in range(zk_rot.shape[1]):
+            z[:, 2 * i, :] += zk_rot[:, i, :]
+            z[:, 2 * i + 1, :] += zv_rot[:, i, :]
+        output.append(z)
 
     if len(output) == 0:
         r = (out[-1:].to(model_management.intermediate_device()), first_pooled)
@@ -149,6 +108,12 @@ def encode_token_weights_negpip_plus(self: SDClipModel, token_weight_pairs):
         r = r + (extra,)
     
     return r
+
+
+def negpip_plus_attn(q, k, v, extra_options):
+    new_k = k[:, 0::2]
+    new_v = v[:, 1::2]
+    return q, new_k, new_v
 
 
 class CLIPNegPipPlus(ComfyNodeABC):
@@ -199,6 +164,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "CLIPNegPipPlus": "CLIP NegPip+",
 
 }
+
 
 
 
