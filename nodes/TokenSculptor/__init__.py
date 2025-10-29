@@ -18,7 +18,7 @@ def _sched(s):
     k = int(round(8 + 12 * s))
     tau = 6.0 + 6.0 * s
     step_scale = (0.06 + 0.14 * s) * 2.0
-    theta_max_deg = 8.0 + 12.0 * s
+    theta_max_deg = (8.0 + 12.0 * s) * 2.0
     return {"k": k, "tau": tau, "step_scale": step_scale, "theta_max_deg": theta_max_deg}
 
 @torch.no_grad()
@@ -82,7 +82,7 @@ def _kl(a, b):
     return float((a * (a.add(EPS).log() - b.add(EPS).log())).sum())
 
 @torch.no_grad()
-def blended_kl_bounded_step(w0, Wn, sched, att, kappa=0.03):
+def blended_kl_bounded_step(w0, Wn, sched, att, kappa=0.01):
     k0 = sched["k"]
     ks = [max(4, int(round(0.5 * k0))), k0, max(5, int(round(1.5 * k0)))]
     taus = [sched["tau"] * 0.9, sched["tau"], sched["tau"] * 1.1]
@@ -162,4 +162,5 @@ def add_to_first_if_shorter(conditioning1, conditioning2, x=0):
     return conditioning1
 
 NODE_CLASS_MAPPINGS = {"TokenSculptor": TokenSculptor}
+
 NODE_DISPLAY_NAME_MAPPINGS = {"TokenSculptor": "Token Sculptor"}
