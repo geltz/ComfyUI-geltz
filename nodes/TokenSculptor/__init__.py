@@ -99,7 +99,8 @@ def blended_kl_bounded_step(w0, Wn, sched, att, kappa=0.03):
         deltas = d_i if deltas is None else deltas + d_i
     w_prop = w0 + deltas
     w0_mag = float(torch.norm(w0))
-    return _normalize(w_prop, dim=0) * w0_mag
+    w_prop_mag = float(torch.norm(w_prop))
+    return w_prop / (w_prop_mag + EPS) * (w0_mag * 0.7)
 
 @torch.no_grad()
 def tokensculptor_tokens_minimal(clip, text, sculpt_strength):
@@ -156,4 +157,5 @@ def add_to_first_if_shorter(conditioning1, conditioning2, x=0):
 NODE_CLASS_MAPPINGS = {"TokenSculptor": TokenSculptor}
 
 NODE_DISPLAY_NAME_MAPPINGS = {"TokenSculptor": "Token Sculptor"}
+
 
