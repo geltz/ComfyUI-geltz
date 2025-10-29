@@ -117,7 +117,7 @@ def tokensculptor_tokens_minimal(clip, text, sculpt_strength):
         clip_model = getattr(clip.cond_stage_model, f"clip_{branch}", None)
         W = _get_embeddings(clip_model)
         Wn = _normalize(W, dim=1)
-        s = float(sculpt_strength)
+        s = float(sculpt_strength) * 2.0
         if branch.lower() == "g":
             s = min(1.0, s * 1.3)
         sched = _sched(s)
@@ -141,8 +141,8 @@ class TokenSculptor:
             }
         }
 
-    RETURN_TYPES = ("CONDITIONING", "STRING")
-    RETURN_NAMES = ("CONDITIONING", "PARAMETERS")
+    RETURN_TYPES = ("CONDITIONING",)
+    RETURN_NAMES = ("CONDITIONING",)
     FUNCTION = "exec"
     CATEGORY = "conditioning"
 
@@ -151,8 +151,7 @@ class TokenSculptor:
         tokens = tokensculptor_tokens_minimal(clip, text, float(sculpt_strength))
         cond, pooled = clip.encode_from_tokens(tokens, return_pooled=True)
         conditioning = [[cond, {"pooled_output": pooled}]]
-        params = f"tokensculptor: sculpt_strength={round(float(sculpt_strength), 3)}"
-        return conditioning, params
+        return (conditioning,)
 
 @torch.no_grad()
 def add_to_first_if_shorter(conditioning1, conditioning2, x=0):
@@ -164,4 +163,3 @@ def add_to_first_if_shorter(conditioning1, conditioning2, x=0):
 
 NODE_CLASS_MAPPINGS = {"TokenSculptor": TokenSculptor}
 NODE_DISPLAY_NAME_MAPPINGS = {"TokenSculptor": "Token Sculptor"}
-
