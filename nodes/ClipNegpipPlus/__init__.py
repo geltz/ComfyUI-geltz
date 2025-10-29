@@ -18,7 +18,7 @@ from ..dit.hunyuan_video_negpip import (
     hunyuan_video_forward_orig_negpip,
 )
 
-NEGPIP_PLUS_OPTION = "ppm_negpip_plus"
+NEGPIP_PLUS_OPTION = "negpip_plus"
 SUPPORTED_ENCODERS = [
     "clip_g",
     "clip_l",
@@ -225,3 +225,4 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "CLIPNegPipPlus": "CLIP NegPip+",
 }
+
