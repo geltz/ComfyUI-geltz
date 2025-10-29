@@ -63,22 +63,11 @@ def encode_token_weights_negpip_plus(self: SDClipModel, token_weight_pairs):
                     weight = token_weight_pairs[k][j][1]
                     if weight != 1.0:
                         if weight < 0:
-                            weight = 1.0 / (1.0 + abs(weight))
+                            weight = abs(weight)
                             zv[i][j] = (zv[i][j] - z_empty[j]) * weight + z_empty[j]
                         else:
                             zk[i][j] = (zk[i][j] - z_empty[j]) * weight + z_empty[j]
                             zv[i][j] = (zv[i][j] - z_empty[j]) * weight + z_empty[j]
-        
-        # Weak decorrelation: add perpendicular component without destroying structure
-        alpha = 0.1
-        zk_mean = zk.mean(dim=1, keepdim=True)
-        zv_mean = zv.mean(dim=1, keepdim=True)
-        zk_centered = zk - zk_mean
-        zv_centered = zv - zv_mean
-        
-        correlation = torch.bmm(zv_centered.transpose(1, 2), zk_centered) / (zk.shape[1] + 1e-8)
-        zv_correction = torch.bmm(zk_centered, correlation) * alpha
-        zv = zv - zv_correction
 
         z = torch.zeros_like(zk).repeat(1, 2, 1)
         for i in range(zk.shape[1]):
@@ -101,7 +90,6 @@ def encode_token_weights_negpip_plus(self: SDClipModel, token_weight_pairs):
         r = r + (extra,)
     
     return r
-
 
 def negpip_plus_attn(q, k, v, extra_options):
     new_k = k[:, 0::2]
@@ -157,6 +145,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "CLIPNegPipPlus": "CLIP NegPip+",
 
 }
+
 
 
 
