@@ -117,7 +117,7 @@ def tokensculptor_tokens_minimal(clip, text, sculpt_strength):
         clip_model = getattr(clip.cond_stage_model, f"clip_{branch}", None)
         W = _get_embeddings(clip_model)
         Wn = _normalize(W, dim=1)
-        s = float(sculpt_strength) * 2.0
+        s = float(sculpt_strength) * 5.0
         if branch.lower() == "g":
             s = min(1.0, s * 1.3)
         sched = _sched(s)
@@ -162,4 +162,5 @@ def add_to_first_if_shorter(conditioning1, conditioning2, x=0):
     return conditioning1
 
 NODE_CLASS_MAPPINGS = {"TokenSculptor": TokenSculptor}
+
 NODE_DISPLAY_NAME_MAPPINGS = {"TokenSculptor": "Token Sculptor"}
