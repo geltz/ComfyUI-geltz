@@ -17,7 +17,7 @@ def _get_embeddings(clip_model):
 def _sched(s):
     k = int(round(8 + 12 * s))
     tau = 6.0 + 6.0 * s
-    step_scale = 0.06 + 0.14 * s
+    step_scale = (0.06 + 0.14 * s) * 2.0
     theta_max_deg = 8.0 + 12.0 * s
     return {"k": k, "tau": tau, "step_scale": step_scale, "theta_max_deg": theta_max_deg}
 
@@ -117,7 +117,7 @@ def tokensculptor_tokens_minimal(clip, text, sculpt_strength):
         clip_model = getattr(clip.cond_stage_model, f"clip_{branch}", None)
         W = _get_embeddings(clip_model)
         Wn = _normalize(W, dim=1)
-        s = float(sculpt_strength) * 5.0
+        s = float(sculpt_strength) * 1.5
         if branch.lower() == "g":
             s = min(1.0, s * 1.3)
         sched = _sched(s)
@@ -162,5 +162,4 @@ def add_to_first_if_shorter(conditioning1, conditioning2, x=0):
     return conditioning1
 
 NODE_CLASS_MAPPINGS = {"TokenSculptor": TokenSculptor}
-
 NODE_DISPLAY_NAME_MAPPINGS = {"TokenSculptor": "Token Sculptor"}
