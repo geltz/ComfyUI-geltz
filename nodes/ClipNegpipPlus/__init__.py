@@ -1,4 +1,3 @@
-# Modified NegPip algorithm with orthogonal decomposition and smooth weight handling
 from functools import partial
 from typing import Any
 
@@ -26,9 +25,13 @@ def has_negpip_plus(model_options: dict):
 
 
 def negpip_plus_attn(q, k, v, extra_options):
-    """Improved attention extraction with optional soft mixing."""
     k_extracted = k[:, 0::2]
     v_extracted = v[:, 1::2]
+    
+    # Negate the v values (which came from negative tokens)
+    v_extracted = -v_extracted
+    
+    return q, k_extracted, v_extracted
     
     # Optional soft mixing for gradient stability (default: pure negpip)
     mix_ratio = extra_options.get("negpip_mix_ratio", 0.0)
@@ -196,5 +199,6 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "CLIPNegPipPlus": "CLIP NegPip+",
 
 }
+
 
 
