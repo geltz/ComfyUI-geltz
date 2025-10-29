@@ -82,15 +82,16 @@ def encode_token_weights_negpip_plus(self: SDClipModel, token_weight_pairs):
             # Process key embeddings
             zk = z_base.clone()
             zv = z_base.clone()
-            
+
+            # Skip negative weights
             for i in range(len(z_base)):
                 for j in range(len(z_base[i])):
                     weight = token_weight_pairs[k_idx][j][1]
-                    if weight != 1.0:
-                        # Extract sign for value vector
-                        abs_weight = abs(weight)
-                        w_eff = abs(weight) if weight > 0 else 1.0 / (2.0 + abs(weight) ** 2) # push away
-                        # Use baseline vector as target
+                    if weight < 0:
+                        zk[i][j] = z_empty[j]
+                        zv[i][j] = z_empty[j]
+                    elif weight != 1.0:
+                        w_eff = abs(weight)
                         zk[i][j] = (zk[i][j] - z_empty[j]) * w_eff + z_empty[j]
                         zv[i][j] = (zv[i][j] - z_empty[j]) * w_eff + z_empty[j]
             
@@ -195,4 +196,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "CLIPNegPipPlus": "CLIP NegPip+",
 
 }
+
 
