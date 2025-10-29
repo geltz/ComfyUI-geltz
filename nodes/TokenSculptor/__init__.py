@@ -82,7 +82,7 @@ def _kl(a, b):
     return float((a * (a.add(EPS).log() - b.add(EPS).log())).sum())
 
 @torch.no_grad()
-def blended_kl_bounded_step(w0, Wn, sched, att, kappa=0.01):
+def blended_kl_bounded_step(w0, Wn, sched, att, kappa=0.03):
     k0 = sched["k"]
     ks = [max(4, int(round(0.5 * k0))), k0, max(5, int(round(1.5 * k0)))]
     taus = [sched["tau"] * 0.9, sched["tau"], sched["tau"] * 1.1]
@@ -98,14 +98,6 @@ def blended_kl_bounded_step(w0, Wn, sched, att, kappa=0.01):
         d_i = w_star_i - w0
         deltas = d_i if deltas is None else deltas + d_i
     w_prop = w0 + deltas
-    idx0, alpha0 = batched_topk_neighbors(w0, Wn, k=k0, tau=sched["tau"])
-    for _ in range(5):
-        wpn = _normalize(w_prop, dim=0)
-        beta = torch.softmax(sched["tau"] * (Wn[idx0] @ wpn), dim=0)
-        if _kl(alpha0, beta) <= kappa:
-            break
-        deltas *= 0.5
-        w_prop = w0 + deltas
     w0_mag = float(torch.norm(w0))
     return _normalize(w_prop, dim=0) * w0_mag
 
@@ -164,3 +156,4 @@ def add_to_first_if_shorter(conditioning1, conditioning2, x=0):
 NODE_CLASS_MAPPINGS = {"TokenSculptor": TokenSculptor}
 
 NODE_DISPLAY_NAME_MAPPINGS = {"TokenSculptor": "Token Sculptor"}
+
