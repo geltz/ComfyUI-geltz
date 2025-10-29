@@ -89,17 +89,10 @@ def encode_token_weights_negpip_plus(self: SDClipModel, token_weight_pairs):
                     if weight != 1.0:
                         # Extract sign for value vector
                         abs_weight = abs(weight)
-                        sign = 1 if weight >= 0 else -1
-                        
-                        # Use original weight directly (no tanh compression)
-                        # Tanh was too conservative for strong negatives
-                        w_eff = abs_weight
-                        
-                        # Apply to key (always positive scaling)
+                        w_eff = abs(weight) if weight > 0 else 1.0 / (1.0 + abs(weight))
+                        # Use baseline vector as target
                         zk[i][j] = (zk[i][j] - z_empty[j]) * w_eff + z_empty[j]
-                        
-                        # Apply to value (sign-aware for negative weights)
-                        zv[i][j] = sign * ((zv[i][j] - z_empty[j]) * w_eff + z_empty[j])
+                        zv[i][j] = (zv[i][j] - z_empty[j]) * w_eff + z_empty[j]
             
             z_weighted = zk  # Use zk as base for rotation
         else:
@@ -200,4 +193,5 @@ NODE_CLASS_MAPPINGS = {
 
 NODE_DISPLAY_NAME_MAPPINGS = {
     "CLIPNegPipPlus": "CLIP NegPip+",
+
 }
