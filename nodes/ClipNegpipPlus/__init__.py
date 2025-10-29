@@ -72,7 +72,8 @@ def encode_token_weights_negpip_plus(
     token_weight_pairs,
     alpha=1.7,
     delta=0.02,
-    sigma=8.0
+    sigma=8.0,
+    blend=0.5
 ):
     to_encode = list()
     max_token_len = 0
@@ -108,9 +109,15 @@ def encode_token_weights_negpip_plus(
                 for j in range(len(zk[i])):
                     weight = token_weight_pairs[k][j][1]
                     if weight != 1.0:
-                        zk[i][j], zv[i][j] = apply_magnitude_compensation(
+                        zk_comp, zv_comp = apply_magnitude_compensation(
                             zk[i][j], zv[i][j], z_empty[j], weight, alpha
                         )
+                        # Blend positive and negative instead of replacing
+                        if weight < 0:
+                            zv[i][j] = blend * zv_comp + (1 - blend) * zk[i][j]
+                        else:
+                            zv[i][j] = zv_comp
+                        zk[i][j] = zk_comp
 
         # Interleave k and v
         z = torch.zeros_like(zk).repeat(1, 2, 1)
@@ -151,6 +158,7 @@ class CLIPNegPipPlus(ComfyNodeABC):
                 "alpha": ("FLOAT", {"default": 1.7, "min": 1.0, "max": 3.0, "step": 0.1}),
                 "delta": ("FLOAT", {"default": 0.02, "min": 0.0, "max": 0.1, "step": 0.005}),
                 "sigma": ("FLOAT", {"default": 8.0, "min": 1.0, "max": 20.0, "step": 0.5}),
+                "blend": ("FLOAT", {"default": 0.5, "min": 0.0, "max": 1.0, "step": 0.05}),
             }
         }
 
@@ -159,7 +167,7 @@ class CLIPNegPipPlus(ComfyNodeABC):
 
     CATEGORY = "conditioning"
 
-    def patch(self, model: ModelPatcher, clip: CLIP, alpha: float, delta: float, sigma: float):
+    def patch(self, model: ModelPatcher, clip: CLIP, alpha: float, delta: float, sigma: float, blend: float):
         m = model.clone()
         c = clip.clone()
         model_options: dict[str, Any] = m.model_options
@@ -178,7 +186,8 @@ class CLIPNegPipPlus(ComfyNodeABC):
                         getattr(c.patcher.model, encoder),
                         alpha=alpha,
                         delta=delta,
-                        sigma=sigma
+                        sigma=sigma,
+                        blend=blend
                     ),
                 )
 
