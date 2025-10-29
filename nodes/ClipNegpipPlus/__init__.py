@@ -62,13 +62,14 @@ def encode_token_weights_negpip_plus(self: SDClipModel, token_weight_pairs):
                 for j in range(len(zk[i])):
                     weight = token_weight_pairs[k][j][1]
                     if weight != 1.0:
+                        # shrink magnitude
                         if weight < 0:
-                            weight = -1.0 / (1.0 + abs(weight))
+                            weight = 1.0 / (1.0 - weight)  # weight becomes 0 to 1
                             sign = -1
                         else:
                             sign = 1
-                        zk[i][j] = (zk[i][j] - z_empty[j]) * abs(weight) + z_empty[j]
-                        zv[i][j] = sign * ((zv[i][j] - z_empty[j]) * abs(weight) + z_empty[j])
+                        zk[i][j] = (zk[i][j] - z_empty[j]) * weight + z_empty[j]
+                        zv[i][j] = sign * ((zv[i][j] - z_empty[j]) * weight + z_empty[j])
 
         z = torch.zeros_like(zk).repeat(1, 2, 1)
         for i in range(zk.shape[1]):
@@ -146,6 +147,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "CLIPNegPipPlus": "CLIP NegPip+",
 
 }
+
 
 
 
