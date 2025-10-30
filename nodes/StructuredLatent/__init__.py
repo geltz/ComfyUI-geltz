@@ -57,7 +57,7 @@ class StructuredLatent:
         "seed": ("INT", {
           "default": 0,
           "min": 0,
-          "max": 0xffffffffffffffff
+          "max": 0xffffffff
         }),
       }
     }
@@ -232,4 +232,5 @@ class StructuredLatent:
     )
     
 NODE_CLASS_MAPPINGS = {"StructuredLatent": StructuredLatent}
+
 NODE_DISPLAY_NAME_MAPPINGS = {"StructuredLatent": "Structured Latent"}
