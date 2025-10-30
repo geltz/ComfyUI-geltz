@@ -54,9 +54,6 @@ Direction-aware model merger decomposing deltas into parallel/orthogonal compone
 
 ## Sampling & Guidance
 
-**Channel Delta Perturbation**  
-Adds channel-drop perturbation to selected UNet transformer blocks and injects a sigma-scheduled delta into CFG for sharper outputs.
-
 **NegPip+**  
 Modification of NegPip that reflects negatives over neutral embeddings for symmetric repulsion, fixes z_empty indexing, and limits effect to actual tokens.  
 *Based on the implementation from [ppm](https://github.com/pamparamm/ComfyUI-ppm)*
@@ -90,3 +87,4 @@ Generate seeded empty latents with various initialization methods (perlin, gauss
 **Token Sculptor**  
 Strengthens prompt adherence by nudging CLIP embeddings toward soft top-k neighbor blends.  
 *Inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI)*  
+
