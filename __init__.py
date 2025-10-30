@@ -57,8 +57,9 @@ def _gradient_emit(s, start_hex, end_hex, *, bg=False):
 
 def _log_loaded():
     msg = f"[geltz] loaded {len(NODE_CLASS_MAPPINGS)} nodes ⧊"
-    # Lavender → soft indigo
-    print(_gradient_emit(msg, "#BCBCF2", "#7A77FF"), flush=True)
+    # Sky → light azure
+    print(_gradient_emit(msg, "#B3E5FF", "#4FC3F7"), flush=True)
 
 _log_loaded()
+
 print()
