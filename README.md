@@ -1,109 +1,92 @@
-**Color Palette Extractor**	
+## Image Processing
 
-Extracts N dominant colors via MiniBatchKMeans and outputs palette image plus CSV of hex codes.	
+**Color Palette Extractor**  
+Extracts N dominant colors via MiniBatchKMeans and outputs palette image plus CSV of hex codes.
 
-**Image Metadata Extractor**	
+**FidelityFX Upscaler**  
+Lightweight AMD FidelityFX CAS upscaler that auto-downloads the CLI (uses Wine on non-Windows) and supports 2–4× or target size with adjustable sharpness.
 
-Reads PNG/TIFF info and outputs normalized prompt/settings summary as a single string.	
+**Kuwahara Filter**  
+Fast edge-preserving filter selecting mean color from the minimum-variance quadrant.
 
-**Kuwahara Filter**	
+**L₀ Smoothing Filter**  
+Global edge-aware smoothing that flattens regions while preserving sharp boundaries.
 
-Fast edge-preserving filter selecting mean color from the minimum-variance quadrant.	
+**Local Laplacian Filter**  
+Halo-free detail/tone manipulation via Laplacian pyramids with separable Gaussian blurs.
 
-**L₀ Smoothing Filter**	
+**Palette Filter**  
+Builds a 3D LUT via sliced optimal transport from a reference image and applies it as a controllable color grade.
 
-Global edge-aware smoothing that flattens regions while preserving sharp boundaries.	
+**Temperature Adjust**  
+LAB-space white-balance adjustment with HSV saturation compensation, range -1.0…+1.0.
+
+**UNet Heatmap**  
+Turns denoised UNet latents into a thermal heatmap via L2 magnitude normalization, bicubic upscaling, and unsharp masking.
+
+## Metadata & Utilities
+
+**Image Metadata Extractor**  
+Reads PNG/TIFF info and outputs normalized prompt/settings summary as a single string.
+
+**Kohya Lora Config**  
+Parses a LoRA's header and extracts human-readable metadata as JSON.  
+*Output compatible with [Kohya's sd-scripts](https://github.com/kohya-ss/sd-scripts)*
+
+**Load Image With Metadata**  
+Loads image with embedded prompts/settings extraction, returns image, mask, and metadata text.
+
+**Token Visualizer**  
+Visualizes token influence via 2D wave path with normalized spikes.
+
+## Model & LoRA Tools
 
 **Load LoRA (SDXL Blocks)**  
-
-Allows setting block weights for an SDXL LoRA. Useful to avoid structural changes but keep the style i.e. only weighting input blocks.  
+Allows setting block weights for an SDXL LoRA. Useful to avoid structural changes but keep the style i.e. only weighting input blocks.
 
 **LoRA Extract**  
-
 Extracts the difference between two models as a LoRA with adjustable rank.  
-*Uses the [sd-mecha](https://github.com/ljleb/sd-mecha) API*  
+*Uses the [sd-mecha](https://github.com/ljleb/sd-mecha) API*
 
-**Load Image With Metadata**	
-
-Loads image with embedded prompts/settings extraction, returns image, mask, and metadata text.	
-
-**Local Laplacian Filter**	
-
-Halo-free detail/tone manipulation via Laplacian pyramids with separable Gaussian blurs.	
-
-**Kohya Lora Config**	
-
-Parses a LoRA's header and extracts human-readable metadata as JSON.  
-*Output compatible with [Kohya's sd-scripts](https://github.com/kohya-ss/sd-scripts)*	
-
-**ORBIT Merge**	
-
+**ORBIT Merge**  
 Direction-aware model merger decomposing deltas into parallel/orthogonal components with independent scaling.  
-*Uses the [sd-mecha](https://github.com/ljleb/sd-mecha) API*	
+*Uses the [sd-mecha](https://github.com/ljleb/sd-mecha) API*
+
+## Sampling & Guidance
+
+**Channel Delta Perturbation**  
+Adds channel-drop perturbation to selected UNet transformer blocks and injects a sigma-scheduled delta into CFG for sharper outputs.
+
+**NegPip+**  
+Modification of NegPip that reflects negatives over neutral embeddings for symmetric repulsion, fixes z_empty indexing, and limits effect to actual tokens.  
+*Based on the implementation from [ppm](https://github.com/pamparamm/ComfyUI-ppm)*
 
 **Perturbed Attention Delta**  
+Small edit of [PAG](https://arxiv.org/abs/2403.17377) with smart sigma-based scheduling.
 
-Small edit of [PAG](https://arxiv.org/abs/2403.17377) with smart sigma-based scheduling.	
+**Quantile Match Scaling**  
+Stabilizes guidance by matching frequency-band quantiles to conditional distribution.
 
-**Quantile Match Scaling**	
-
-Stabilizes guidance by matching frequency-band quantiles to conditional distribution.	
-
-**SADA Model Acceleration**	
-
+**SADA Model Acceleration**  
 Skips redundant diffusion steps using trajectory stability analysis for faster sampling.  
-*Based on [Stability-guided Adaptive Diffusion Acceleration](https://arxiv.org/abs/2507.17135)*	
+*Based on [Stability-guided Adaptive Diffusion Acceleration](https://arxiv.org/abs/2507.17135)*
 
-**Structured Latent**  
+**Spatial Split Attention**  
+Self-attention and cross-attention algorithm that equally weights left and right conditioning prompts, combining two regions with progressive convergence controlled by noise level.
 
-Generate seeded empty latents with various initialization methods (perlin, gaussian, fractal, etc.)  
-
-**Temperature Adjust**	
-
-LAB-space white-balance adjustment with HSV saturation compensation, range -1.0…+1.0.	
-
-**Token Delta Perturbation**	
-
+**Token Delta Perturbation**  
 Shuffles attention tokens using a scaled delta, with a cosine-decayed perturbation scale.  
-*Based on [Token Perturbation Guidance](https://arxiv.org/abs/2506.10036) with utilities from [ppm](https://github.com/pamparamm/ComfyUI-ppm)*  
-
-**Token Visualizer**	
-
-Visualizes token influence via 2D wave path with normalized spikes.	
-
-**Token Sculptor**	
-
-Strengthens prompt adherence by nudging CLIP embeddings toward soft top-k neighbor blends.  
-*Inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI)*	
+*Based on [Token Perturbation Guidance](https://arxiv.org/abs/2506.10036) with utilities from [ppm](https://github.com/pamparamm/ComfyUI-ppm)*
 
 **Velocity Scaling**  
-
 Reduces over-brightening in v-prediction models via epsilon scaling adaptation.  
-*Based on [Elucidating the Exposure Bias in Diffusion Models](https://arxiv.org/abs/2308.15321)*	
+*Based on [Elucidating the Exposure Bias in Diffusion Models](https://arxiv.org/abs/2308.15321)*
 
+## Latent & Prompt Tools
 
+**Structured Latent**  
+Generate seeded empty latents with various initialization methods (perlin, gaussian, fractal, etc.)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+**Token Sculptor**  
+Strengthens prompt adherence by nudging CLIP embeddings toward soft top-k neighbor blends.  
+*Inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI)*
