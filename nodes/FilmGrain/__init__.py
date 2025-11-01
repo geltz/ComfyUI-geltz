@@ -16,13 +16,14 @@ class FilmGrainFilter:
     CATEGORY = "image/filters"
 
     def apply_grain(
+        self,
         image: torch.Tensor,
-        intensity: float = 0.15,     # 0..1, typical 0.05..0.25
-        grain_size: int = 3,         # odd >=1, controls coarseness
-        shadow: float = 0.6,         # shadow emphasis
-        midtone: float = 0.4,        # midtone emphasis
-        seed: int | None = None,     # base RNG seed
-        frame: int = 0               # add to seed for temporal variation
+        intensity: float = 0.15,
+        grain_size: int = 3,
+        shadow: float = 0.6,
+        midtone: float = 0.4,
+        seed: int | None = None,
+        frame: int = 0,
     ) -> torch.Tensor:
         """
         Inputs
@@ -106,4 +107,5 @@ class FilmGrainFilter:
 
 
 NODE_CLASS_MAPPINGS = {"FilmGrainFilter": FilmGrainFilter}
+
 NODE_DISPLAY_NAME_MAPPINGS = {"FilmGrainFilter": "Film Grain"}
