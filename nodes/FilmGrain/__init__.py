@@ -7,8 +7,8 @@ class FilmGrainFilter:
         return {
             "required": {
                 "image": ("IMAGE",),
-                "intensity": ("FLOAT", {"default": 0.05, "min": 0.0, "max": 0.3, "step": 0.01}),
-                "grain_size": ("INT", {"default": 3, "min": 1, "max": 9, "step": 2}),
+                "intensity": ("FLOAT", {"default": 0.01, "min": 0.0, "max": 0.3, "step": 0.01}),
+                "grain_size": ("INT", {"default": 1, "min": 1, "max": 9, "step": 2}),
                 "shadow_weight": ("FLOAT", {"default": 0.6, "min": 0.0, "max": 1.0, "step": 0.1}),
                 "midtone_weight": ("FLOAT", {"default": 0.4, "min": 0.0, "max": 1.0, "step": 0.1}),
                 "seed": ("INT", {"default": 0, "min": 0, "max": 0xffffffff}),
