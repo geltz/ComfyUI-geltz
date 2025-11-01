@@ -9,8 +9,8 @@ Extracts N dominant colors via MiniBatchKMeans and outputs palette image plus CS
 **FidelityFX Upscaler**  
 Lightweight AMD FidelityFX CAS upscaler that auto-downloads the CLI (uses Wine on non-Windows) and supports target scale with adjustable sharpness.	
 
-**Film Grain**	
-Luma-weighted, band-limited, linear-light grain with shadow/midtone weighting, Poisson-like scaling, deterministic seeding, and RGB-consistent noise.	
+**Film Grain**	  
+Luma-weighted, band-limited, linear-light grain with shadow/midtone weighting, Poisson-like scaling, deterministic seeding, and RGB-consistent noise.	  
 
 **Kuwahara Filter**  
 Fast edge-preserving filter selecting mean color from the minimum-variance quadrant.
@@ -90,33 +90,34 @@ Reduces over-brightening in v-prediction models via epsilon scaling adaptation.
 
 ## Samplers
 
-Loaded into KSampler's `sampler` selector.	
+Loaded into KSampler's `sampler` selector.	  
 
-**Ralston**	
-Third-order Ralston method with optimal error coefficients.		
+**Ralston**	  
+Third-order Ralston method with optimal error coefficients.		  
 
-**Trident**	
-Third-order Runge-Kutta sampler.		
+**Trident**	  
+Third-order Runge-Kutta sampler.		  
 
-**Bogacki**	
-Third-order Bogacki-Shampine method.		
+**Bogacki**	  
+Third-order Bogacki-Shampine method.		  
 
 ## Schedulers
 
-Loaded into KSampler's `scheduler` selector.	
+Loaded into KSampler's `scheduler` selector.	  
 
-**Rewind**	
-Log-linear with sinusoidal warp (amp=0.15); non-uniform spacing for ODE steps with optional stall kicks.	
+**Rewind**	  
+Log-linear with sinusoidal warp (amp=0.15); non-uniform spacing for ODE steps with optional stall kicks.	  
 
-**Power**	
-Power-law interpolation (rho=7.0); concentrates steps where noise changes matter most for improved quality.		
+**Power**	  
+Power-law interpolation (rho=7.0); concentrates steps where noise changes matter most for improved quality.		  
 
 ## Latent & Prompt Tools
 
-**Structured Latent**  
+**Structured Latent**    
 Generate seeded empty latents with various initialization methods (perlin, gaussian, fractal, etc.)
 
 **Token Sculptor**  
 Strengthens prompt adherence by nudging CLIP embeddings toward soft top-k neighbor blends.  
 *Inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI)*  
+
 
