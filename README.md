@@ -1,10 +1,16 @@
 ## Image Processing
 
+**Chromatic Aberration**	
+Shifts red and blue channels by a pixel offset to create edge fringing.		
+
 **Color Palette Extractor**  
-Extracts N dominant colors via MiniBatchKMeans and outputs palette image plus CSV of hex codes.
+Extracts N dominant colors via MiniBatchKMeans and outputs palette image plus CSV of hex codes.	
 
 **FidelityFX Upscaler**  
-Lightweight AMD FidelityFX CAS upscaler that auto-downloads the CLI (uses Wine on non-Windows) and supports target scale with adjustable sharpness.
+Lightweight AMD FidelityFX CAS upscaler that auto-downloads the CLI (uses Wine on non-Windows) and supports target scale with adjustable sharpness.	
+
+**Film Grain**	
+Luma-weighted, band-limited, linear-light grain with shadow/midtone weighting, Poisson-like scaling, deterministic seeding, and RGB-consistent noise.	
 
 **Kuwahara Filter**  
 Fast edge-preserving filter selecting mean color from the minimum-variance quadrant.
@@ -71,6 +77,9 @@ Skips redundant diffusion steps using trajectory stability analysis for faster s
 **Spatial Split Attention**  
 Self-attention and cross-attention algorithm that equally weights left and right conditioning prompts, combining two regions with progressive convergence controlled by noise level.
 
+**Spectral Drift Perturbation**		
+UNet patch that injects spectral-drift noise into transformer blocks and blends CFG with [PAG](https://arxiv.org/abs/2403.17377) via a cosine schedule; parameters control scale, drift, and coherence.		
+
 **Token Delta Perturbation**  
 Shuffles attention tokens using a scaled delta, with a cosine-decayed perturbation scale.  
 *Based on [Token Perturbation Guidance](https://arxiv.org/abs/2506.10036) with utilities from [ppm](https://github.com/pamparamm/ComfyUI-ppm)*
@@ -78,6 +87,29 @@ Shuffles attention tokens using a scaled delta, with a cosine-decayed perturbati
 **Velocity Scaling**  
 Reduces over-brightening in v-prediction models via epsilon scaling adaptation.  
 *Based on [Elucidating the Exposure Bias in Diffusion Models](https://arxiv.org/abs/2308.15321)*
+
+## Samplers
+
+Loaded into KSampler's `sampler` selector.	
+
+**Ralston**	
+Third-order Ralston method with optimal error coefficients.		
+
+**Trident**	
+Third-order Runge-Kutta sampler.		
+
+**Bogacki**	
+Third-order Bogacki-Shampine method.		
+
+## Schedulers
+
+Loaded into KSampler's `scheduler` selector.	
+
+**Rewind**	
+Log-linear with sinusoidal warp (amp=0.15); non-uniform spacing for ODE steps with optional stall kicks.	
+
+**Power**	
+Power-law interpolation (rho=7.0); concentrates steps where noise changes matter most for improved quality.		
 
 ## Latent & Prompt Tools
 
