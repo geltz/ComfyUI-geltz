@@ -77,8 +77,8 @@ Skips redundant diffusion steps using trajectory stability analysis for faster s
 **Spatial Split Attention**  
 Self-attention and cross-attention algorithm that equally weights left and right conditioning prompts, combining two regions with progressive convergence controlled by noise level.
 
-**Spectral Drift Perturbation**		
-UNet patch that injects spectral-drift noise into transformer blocks and blends CFG with [PAG](https://arxiv.org/abs/2403.17377) via a cosine schedule; parameters control scale, drift, and coherence.		
+**Spectral Drift Perturbation**		  
+UNet patch that injects spectral-drift noise into transformer blocks and blends CFG with [PAG](https://arxiv.org/abs/2403.17377) via a cosine schedule; parameters control scale, drift, and coherence.		  
 
 **Token Delta Perturbation**  
 Shuffles attention tokens using a scaled delta, with a cosine-decayed perturbation scale.  
@@ -119,6 +119,7 @@ Generate seeded empty latents with various initialization methods (perlin, gauss
 **Token Sculptor**  
 Strengthens prompt adherence by nudging CLIP embeddings toward soft top-k neighbor blends.  
 *Inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI)*  
+
 
 
 
