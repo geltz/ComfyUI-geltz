@@ -124,7 +124,7 @@ def patched_calculate(model_sampling, scheduler_name, steps):
     scheduler_map = {
         'rewind': rewind_sigmas,
         'river': river_sigmas,
-        'power': power_sigmas
+        'power': power_sigmas,
         'snr_uniform': snr_uniform_sigmas
     }
     if scheduler_name in scheduler_map:
@@ -136,4 +136,5 @@ comfy.samplers.calculate_sigmas = patched_calculate
 NODE_CLASS_MAPPINGS = {}
 
 __all__ = ['NODE_CLASS_MAPPINGS']
+
 
