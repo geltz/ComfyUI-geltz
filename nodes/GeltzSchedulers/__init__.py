@@ -134,7 +134,7 @@ def momentum_sigmas(model_sampling, steps, **kwargs):
         append_zero = False
     
     # Simulate momentum-based traversal with velocity persistence
-    u = torch.zeros(num_steps)
+    u = torch.zeros(num_steps, device=s.sigma_max.device)
     velocity = 0.0
     position = 0.0
     
@@ -186,6 +186,7 @@ comfy.samplers.calculate_sigmas = patched_calculate
 NODE_CLASS_MAPPINGS = {}
 
 __all__ = ['NODE_CLASS_MAPPINGS']
+
 
 
 
