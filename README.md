@@ -104,12 +104,6 @@ Prediction agnostic. Velocity-based spacing: accelerates through stable regions,
 **River**    
 Designed for rectified flow. Step uniformly in alpha, then map to sigma via sigma = sqrt(1/α^2 - 1).     
 
-**Slide**  
-S-curve spacing. Smooth transition between momentum's brightness and river's darkness.  
-
-**Line**    
-Perceptual linear. Uniform steps in log-space for consistent perceptual density.    
-
 ## Latent & Prompt Tools
 
 **Structured Latent**    
@@ -118,6 +112,7 @@ Generate seeded empty latents with various initialization methods (perlin, gauss
 **Token Sculptor**  
 Strengthens prompt adherence by nudging CLIP embeddings toward soft top-k neighbor blends.  
 *Inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI)*  
+
 
 
 
