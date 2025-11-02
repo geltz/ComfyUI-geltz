@@ -46,9 +46,7 @@ def river_sigmas(model_sampling, steps, **kwargs):
     
     r = float(kwargs.get("low_noise_ramp", 0.30))
     if r > 0:
-        # cosine ease-in-out
-        u_cos = 0.5 * (1.0 - torch.cos(math.pi * u))
-        u = (1.0 - r) * u + r * u_cos
+        u = (torch.exp(r * u) - 1.0) / (torch.exp(r) - 1.0) # exponential
 
     # calculate sigmas (always executed)
     alpha = alpha_min + u * (alpha_max - alpha_min)
@@ -139,6 +137,7 @@ comfy.samplers.calculate_sigmas = patched_calculate
 NODE_CLASS_MAPPINGS = {}
 
 __all__ = ['NODE_CLASS_MAPPINGS']
+
 
 
 
