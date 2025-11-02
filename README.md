@@ -110,6 +110,9 @@ Power-law interpolation (rho=7.0); concentrates steps where noise changes matter
 **SNR Uniform**  
 Designed for v-prediction. Steps uniformly in log SNR and maps back to σ to produce a stable k-diffusion sigma schedule.  
 
+**Momentum**  
+Prediction-agnostic. Velocity-based spacing: accelerates through stable regions, decelerates at critical transitions.  
+
 ## Latent & Prompt Tools
 
 **Structured Latent**    
@@ -118,6 +121,7 @@ Generate seeded empty latents with various initialization methods (perlin, gauss
 **Token Sculptor**  
 Strengthens prompt adherence by nudging CLIP embeddings toward soft top-k neighbor blends.  
 *Inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI)*  
+
 
 
 
