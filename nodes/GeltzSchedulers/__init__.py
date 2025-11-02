@@ -96,7 +96,14 @@ def snr_uniform_sigmas(model_sampling, steps, **kwargs):
     lam_min = log_snr(torch.tensor(sigma_max))
     lam_max = log_snr(torch.tensor(sigma_min))
     
-    lam_u = torch.linspace(lam_min, lam_max, num_steps)
+    u = torch.linspace(0.0, 1.0, num_steps)
+    
+    # apply ramp like river
+    r = float(kwargs.get("low_noise_ramp", 0.30))
+    if r > 0:
+        u = 1.0 - torch.pow(1.0 - u, 1.0 + r)
+    
+    lam_u = lam_min + u * (lam_max - lam_min)
     t = torch.exp(-2.0 * lam_u)
     
     # Solve σ² from t = exp(-2λ) = σ²(1+σ²)
@@ -138,6 +145,7 @@ comfy.samplers.calculate_sigmas = patched_calculate
 NODE_CLASS_MAPPINGS = {}
 
 __all__ = ['NODE_CLASS_MAPPINGS']
+
 
 
 
