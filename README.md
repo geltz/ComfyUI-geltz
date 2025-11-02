@@ -105,7 +105,7 @@ Loaded into KSampler's `scheduler` selector.
 Log-linear with sinusoidal warp (amp=0.15); non-uniform spacing for ODE steps with optional stall kicks.	  
 
 **River**  
-Step uniformly in alpha, then map to sigma via sigma = sqrt(1/α^2 - 1).  
+Tailor-made for rectified flow models. Step uniformly in alpha, then map to sigma via sigma = sqrt(1/α^2 - 1).     
 
 **Power**	  
 Power-law interpolation (rho=7.0); concentrates steps where noise changes matter most for improved quality.		  
@@ -118,6 +118,7 @@ Generate seeded empty latents with various initialization methods (perlin, gauss
 **Token Sculptor**  
 Strengthens prompt adherence by nudging CLIP embeddings toward soft top-k neighbor blends.  
 *Inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI)*  
+
 
 
 
