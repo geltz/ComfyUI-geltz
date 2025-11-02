@@ -52,11 +52,7 @@ Allows setting block weights for an SDXL LoRA. Useful to avoid structural change
 
 **LoRA Extract**  
 Extracts the difference between two models as a LoRA with adjustable rank.  
-*Uses the [sd-mecha](https://github.com/ljleb/sd-mecha) API*
-
-**ORBIT Merge**  
-Direction-aware model merger decomposing deltas into parallel/orthogonal components with independent scaling.  
-*Uses the [sd-mecha](https://github.com/ljleb/sd-mecha) API*
+*Uses the [sd-mecha](https://github.com/ljleb/sd-mecha) API*  
 
 ## Sampling & Guidance
 
@@ -119,6 +115,7 @@ Generate seeded empty latents with various initialization methods (perlin, gauss
 **Token Sculptor**  
 Strengthens prompt adherence by nudging CLIP embeddings toward soft top-k neighbor blends.  
 *Inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI)*  
+
 
 
 
