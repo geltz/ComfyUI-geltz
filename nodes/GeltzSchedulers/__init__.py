@@ -16,7 +16,7 @@ def momentum_sigmas(model_sampling, steps, **kwargs):
     
     accel = float(kwargs.get("accel", 1.8))
     damping = float(kwargs.get("damping", 0.3))
-    inertia = float(kwargs.get("inertia", 0.82))
+    inertia = float(kwargs.get("inertia", 0.9))
     
     append_zero = True
     if math.isclose(float(s.sigma(end)), 0, abs_tol=0.00001):
@@ -104,6 +104,7 @@ comfy.samplers.calculate_sigmas = patched_calculate
 NODE_CLASS_MAPPINGS = {}
 
 __all__ = ['NODE_CLASS_MAPPINGS']
+
 
 
 
