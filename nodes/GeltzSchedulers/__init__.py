@@ -1,5 +1,5 @@
 # Rewind: Log-linear with sinusoidal warp (amp=0.15); non-uniform spacing for ODE steps with optional stall kicks.
-# River: Step uniformly in alpha, then map to sigma via sigma = sqrt(1/α^2 - 1).  
+# River: Tailor-made for rectified flow models. Step uniformly in alpha, then map to sigma via sigma = sqrt(1/α^2 - 1).     
 # Power: Power-law interpolation (rho=7.0); concentrates steps where noise changes matter most for improved quality.
 
 import torch
@@ -101,4 +101,5 @@ comfy.samplers.calculate_sigmas = patched_calculate
 NODE_CLASS_MAPPINGS = {}
 
 __all__ = ['NODE_CLASS_MAPPINGS']
+
 
