@@ -2,6 +2,7 @@
 # River: Tailor-made for rectified flow models. Step uniformly in alpha, then map to sigma via sigma = sqrt(1/α^2 - 1).     
 # Power: Power-law interpolation (rho=7.0); concentrates steps where noise changes matter most for improved quality.
 # SNR Uniform: Steps uniformly in log SNR and maps back to σ to produce a stable k-diffusion sigma schedule.    
+# Momentum: Velocity-based spacing: accelerates through stable regions, decelerates at critical transitions.
 
 import torch
 import math
@@ -117,13 +118,52 @@ def snr_uniform_sigmas(model_sampling, steps, **kwargs):
     sigmas = torch.nan_to_num(sigmas, nan=0.0, posinf=sigma_max, neginf=0.0)
     return sigmas
 
+def momentum_sigmas(model_sampling, steps, **kwargs):
+    num_steps = int(steps)
+    s = model_sampling
+    start = s.timestep(s.sigma_max)
+    end = s.timestep(s.sigma_min)
+    
+    accel = float(kwargs.get("accel", 1.8))
+    damping = float(kwargs.get("damping", 0.3))
+    inertia = float(kwargs.get("inertia", 0.82))
+    
+    append_zero = True
+    if math.isclose(float(s.sigma(end)), 0, abs_tol=0.00001):
+        num_steps += 1
+        append_zero = False
+    
+    # Simulate momentum-based traversal with velocity persistence
+    u = torch.zeros(num_steps)
+    velocity = 0.0
+    position = 0.0
+    
+    for i in range(num_steps):
+        # Acceleration varies by position (slower at ends)
+        force = accel * (1.0 - damping * abs(2.0 * position - 1.0))
+        velocity = inertia * velocity + (1.0 - inertia) * force / num_steps
+        position += velocity / num_steps
+        position = min(position, 1.0)
+        u[i] = position
+    
+    # Normalize to [0, 1]
+    u = u / u[-1] if u[-1] > 0 else u
+    
+    timesteps = start + u * (end - start)
+    
+    sigmas = torch.tensor([float(s.sigma(ts)) for ts in timesteps])
+    if append_zero:
+        sigmas = torch.cat([sigmas, torch.zeros(1)])
+    return sigmas
+
 k_diffusion_sampling.get_sigmas_rewind = rewind_sigmas
 k_diffusion_sampling.get_sigmas_rewind = river_sigmas
 k_diffusion_sampling.get_sigmas_power = power_sigmas
 k_diffusion_sampling.get_sigmas_snr_uniform = snr_uniform_sigmas
+k_diffusion_sampling.get_sigmas_momentum_uniform = momentum_sigmas
 
 if hasattr(KSampler, 'SCHEDULERS') and isinstance(KSampler.SCHEDULERS, list):
-    for name in ["rewind", "river", "power", "snr_uniform"]:
+    for name in ["rewind", "river", "power", "snr_uniform", "momentum"]:
         if name not in KSampler.SCHEDULERS:
             KSampler.SCHEDULERS.append(name)
 
@@ -134,7 +174,8 @@ def patched_calculate(model_sampling, scheduler_name, steps):
         'rewind': rewind_sigmas,
         'river': river_sigmas,
         'power': power_sigmas,
-        'snr_uniform': snr_uniform_sigmas
+        'snr_uniform': snr_uniform_sigmas,
+        'momentum': momentum_sigmas
     }
     if scheduler_name in scheduler_map:
         return scheduler_map[scheduler_name](model_sampling, steps)
