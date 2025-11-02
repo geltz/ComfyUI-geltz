@@ -1,6 +1,7 @@
 # Rewind: Log-linear with sinusoidal warp (amp=0.15); non-uniform spacing for ODE steps with optional stall kicks.
 # River: Tailor-made for rectified flow models. Step uniformly in alpha, then map to sigma via sigma = sqrt(1/α^2 - 1).     
 # Power: Power-law interpolation (rho=7.0); concentrates steps where noise changes matter most for improved quality.
+# SNR Uniform: Steps uniformly in log SNR and maps back to σ to produce a stable k-diffusion sigma schedule.    
 
 import torch
 import math
@@ -75,12 +76,45 @@ def power_sigmas(model_sampling, steps, **kwargs):
     sigmas = torch.nan_to_num(sigmas, nan=0.0, posinf=sigma_max, neginf=0.0)
     return sigmas
 
+def snr_uniform_sigmas(model_sampling, steps, *, device=None, out_dtype=torch.float32, sigma_min=None, sigma_max=None):
+    n = int(steps)
+    if n < 1:
+        return torch.zeros(1, dtype=out_dtype, device=device or "cpu")
+    
+    smin = float(sigma_min if sigma_min is not None else getattr(model_sampling, "sigma_min", 0.0))
+    smax = float(sigma_max if sigma_max is not None else getattr(model_sampling, "sigma_max", 1.0))
+    smin = max(smin, 1e-6)
+    smax = max(smax, smin)
+
+    work_dev = device or "cpu"
+    wdtype = torch.float64
+
+    sigma_min_t = torch.tensor(smin, dtype=wdtype, device=work_dev)
+    sigma_max_t = torch.tensor(smax, dtype=wdtype, device=work_dev)
+
+    def lam(s):
+        return -0.5 * torch.log1p(s * s) - torch.log(s)
+
+    lam_min = lam(sigma_max_t)
+    lam_max = lam(sigma_min_t)
+
+    lam_u = torch.linspace(lam_min, lam_max, n, dtype=wdtype, device=work_dev)
+    t = torch.exp(-2.0 * lam_u)
+    t = torch.clamp(t, min=0.0, max=1e50)
+
+    sigma_sq = 0.5 * (-1.0 + torch.sqrt(1.0 + 4.0 * t))
+    sigmas = torch.sqrt(torch.clamp(sigma_sq, min=0.0))
+    sigmas = torch.cat([sigmas, torch.zeros(1, dtype=wdtype, device=work_dev)], dim=0)
+
+    return sigmas.to(dtype=out_dtype)
+
 k_diffusion_sampling.get_sigmas_rewind = rewind_sigmas
 k_diffusion_sampling.get_sigmas_rewind = river_sigmas
 k_diffusion_sampling.get_sigmas_power = power_sigmas
+k_diffusion_sampling.get_sigmas_snr_uniform = snr_uniform_sigmas
 
 if hasattr(KSampler, 'SCHEDULERS') and isinstance(KSampler.SCHEDULERS, list):
-    for name in ["rewind", "river", "power"]:
+    for name in ["rewind", "river", "power", "snr_uniform"]:
         if name not in KSampler.SCHEDULERS:
             KSampler.SCHEDULERS.append(name)
 
@@ -91,6 +125,7 @@ def patched_calculate(model_sampling, scheduler_name, steps):
         'rewind': rewind_sigmas,
         'river': river_sigmas,
         'power': power_sigmas
+        'snr_uniform': snr_uniform_sigmas
     }
     if scheduler_name in scheduler_map:
         return scheduler_map[scheduler_name](model_sampling, steps)
@@ -101,5 +136,4 @@ comfy.samplers.calculate_sigmas = patched_calculate
 NODE_CLASS_MAPPINGS = {}
 
 __all__ = ['NODE_CLASS_MAPPINGS']
-
 
