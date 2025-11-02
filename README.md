@@ -98,20 +98,11 @@ Third-order Bogacki-Shampine method.
 
 Loaded into KSampler's `scheduler` selector.	  
 
-**Rewind**	  
-Log-linear with sinusoidal warp (amp=0.15); non-uniform spacing for ODE steps with optional stall kicks.	  
-
-**River**  
-Designed for rectified flow. Step uniformly in alpha, then map to sigma via sigma = sqrt(1/α^2 - 1).     
-
-**Power**	  
-Power-law interpolation (rho=7.0); concentrates steps where noise changes matter most for improved quality.		
-
-**SNR Uniform**  
-Designed for v-prediction. Steps uniformly in log SNR and maps back to σ to produce a stable k-diffusion sigma schedule.  
-
-**Momentum**  
+**Momentum**    
 Prediction-agnostic. Velocity-based spacing: accelerates through stable regions, decelerates at critical transitions.  
+
+**River**    
+Designed for rectified flow. Step uniformly in alpha, then map to sigma via sigma = sqrt(1/α^2 - 1).     
 
 ## Latent & Prompt Tools
 
