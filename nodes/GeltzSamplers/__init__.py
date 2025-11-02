@@ -47,41 +47,6 @@ def sample_ralston(model, x, sigmas, extra_args=None, callback=None, disable=Non
     return x
 
 @torch.no_grad()
-def sample_trident(model, x, sigmas, extra_args=None, callback=None, disable=None):
-    """Third-order Runge-Kutta sampler for diffusion models."""
-    extra_args = {} if extra_args is None else extra_args
-    s_in = x.new_ones([x.shape[0]])
-    
-    for i in trange(len(sigmas) - 1, disable=disable):
-        sigma = sigmas[i]
-        sigma_next = sigmas[i + 1]
-        dt = sigma_next - sigma
-        
-        # First stage
-        denoised = model(x, sigma * s_in, **extra_args)
-        d1 = to_d(x, sigma, denoised)
-        
-        if callback is not None:
-            callback({'x': x, 'i': i, 'sigma': sigma, 'denoised': denoised})
-        
-        # Second stage
-        x_2 = x + d1 * dt * 0.5
-        sigma_2 = sigma + dt * 0.5
-        denoised_2 = model(x_2, sigma_2 * s_in, **extra_args)
-        d2 = to_d(x_2, sigma_2, denoised_2)
-        
-        # Third stage
-        x_3 = x + d2 * dt * 0.75
-        sigma_3 = sigma + dt * 0.75
-        denoised_3 = model(x_3, sigma_3 * s_in, **extra_args)
-        d3 = to_d(x_3, sigma_3, denoised_3)
-        
-        # Combine stages with RK3 weights
-        x = x + dt * (2/9 * d1 + 1/3 * d2 + 4/9 * d3)
-    
-    return x
-
-@torch.no_grad()
 def sample_bogacki(model, x, sigmas, extra_args=None, callback=None, disable=None):
     """Third-order Bogacki-Shampine method."""
     extra_args = {} if extra_args is None else extra_args
@@ -118,13 +83,11 @@ def sample_bogacki(model, x, sigmas, extra_args=None, callback=None, disable=Non
 
 # ----------------- registration -----------------
 ksampling.sample_ralston = sample_ralston
-ksampling.sample_trident = sample_trident
 ksampling.sample_bogacki = sample_bogacki
 
 # Register samplers with ComfyUI
 sampler_mappings = [
     ("ralston", sample_ralston),
-    ("trident", sample_trident),
     ("bogacki", sample_bogacki),
 ]
 
@@ -145,4 +108,5 @@ except Exception as e:
     print(f"Warning: sampler registration failed: {e}")
 
 NODE_CLASS_MAPPINGS = {}
+
 __all__ = ["NODE_CLASS_MAPPINGS"] + [name for name, _ in sampler_mappings]
