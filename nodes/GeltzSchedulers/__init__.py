@@ -78,37 +78,37 @@ def power_sigmas(model_sampling, steps, **kwargs):
     sigmas = torch.nan_to_num(sigmas, nan=0.0, posinf=sigma_max, neginf=0.0)
     return sigmas
 
-def snr_uniform_sigmas(model_sampling, steps, *, device=None, out_dtype=torch.float32, sigma_min=None, sigma_max=None):
-    n = int(steps)
-    if n < 1:
-        return torch.zeros(1, dtype=out_dtype, device=device or "cpu")
+def snr_uniform_sigmas(model_sampling, steps, **kwargs):
+    num_steps = int(steps)
+    sigma_min = float(model_sampling.sigma_min)
+    sigma_max = float(model_sampling.sigma_max)
     
-    smin = float(sigma_min if sigma_min is not None else getattr(model_sampling, "sigma_min", 0.0))
-    smax = float(sigma_max if sigma_max is not None else getattr(model_sampling, "sigma_max", 1.0))
-    smin = max(smin, 1e-6)
-    smax = max(smax, smin)
-
-    work_dev = device or "cpu"
-    wdtype = torch.float64
-
-    sigma_min_t = torch.tensor(smin, dtype=wdtype, device=work_dev)
-    sigma_max_t = torch.tensor(smax, dtype=wdtype, device=work_dev)
-
-    def lam(s):
+    if num_steps < 1:
+        return torch.zeros(1)
+    
+    sigma_min = max(sigma_min, 1e-6)
+    sigma_max = max(sigma_max, sigma_min)
+    
+    # log-SNR: λ(σ) = -0.5*log(1+σ²) - log(σ)
+    def log_snr(s):
         return -0.5 * torch.log1p(s * s) - torch.log(s)
-
-    lam_min = lam(sigma_max_t)
-    lam_max = lam(sigma_min_t)
-
-    lam_u = torch.linspace(lam_min, lam_max, n, dtype=wdtype, device=work_dev)
+    
+    lam_min = log_snr(torch.tensor(sigma_max))
+    lam_max = log_snr(torch.tensor(sigma_min))
+    
+    lam_u = torch.linspace(lam_min, lam_max, num_steps)
     t = torch.exp(-2.0 * lam_u)
-    t = torch.clamp(t, min=0.0, max=1e50)
-
+    
+    # Solve σ² from t = exp(-2λ) = σ²(1+σ²)
     sigma_sq = 0.5 * (-1.0 + torch.sqrt(1.0 + 4.0 * t))
     sigmas = torch.sqrt(torch.clamp(sigma_sq, min=0.0))
-    sigmas = torch.cat([sigmas, torch.zeros(1, dtype=wdtype, device=work_dev)], dim=0)
-
-    return sigmas.to(dtype=out_dtype)
+    
+    sigmas, _ = torch.sort(sigmas, descending=True)
+    sigmas[-1] = max(sigmas[-1].item(), sigma_min)
+    sigmas = torch.cat([sigmas, torch.zeros(1)])
+    sigmas = torch.clamp(sigmas, max=sigma_max)
+    sigmas = torch.nan_to_num(sigmas, nan=0.0, posinf=sigma_max, neginf=0.0)
+    return sigmas
 
 k_diffusion_sampling.get_sigmas_rewind = rewind_sigmas
 k_diffusion_sampling.get_sigmas_rewind = river_sigmas
@@ -138,6 +138,7 @@ comfy.samplers.calculate_sigmas = patched_calculate
 NODE_CLASS_MAPPINGS = {}
 
 __all__ = ['NODE_CLASS_MAPPINGS']
+
 
 
 
