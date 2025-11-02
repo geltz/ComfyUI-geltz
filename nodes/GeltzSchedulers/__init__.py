@@ -27,6 +27,7 @@ def rewind_sigmas(model_sampling, steps, **kwargs):
     return sigmas
 
 def river_sigmas(model_sampling, steps, **kwargs):
+    import torch, math
     num_steps = int(steps)
     sigma_min = float(model_sampling.sigma_min)
     sigma_max = float(model_sampling.sigma_max)
@@ -36,21 +37,22 @@ def river_sigmas(model_sampling, steps, **kwargs):
     sigma_min = max(sigma_min, 1e-12)
     sigma_max = max(sigma_max, sigma_min)
 
-    # α(σ) = 1 / sqrt(1 + σ^2)
     def alpha_of_sigma(s):
         return 1.0 / math.sqrt(1.0 + s * s)
 
-    alpha_min = alpha_of_sigma(sigma_max)  # corresponds to largest noise
-    alpha_max = alpha_of_sigma(sigma_min)  # corresponds to smallest noise
+    alpha_min = alpha_of_sigma(sigma_max)
+    alpha_max = alpha_of_sigma(sigma_min)
 
-    u = torch.linspace(0, 1, num_steps)
-    # α increases linearly from α_min (σ_max) to α_max (σ_min)
+    u = torch.linspace(0.0, 1.0, num_steps)
+
+    # minimal low-noise ramp: pushes mass toward small σ without changing endpoints
+    r = float(kwargs.get("low_noise_ramp", 0.20))  # 0 disables bias when set to 0
+    if r > 0:
+        u = 1.0 - torch.pow(1.0 - u, 1.0 + r)
+
     alpha = alpha_min + u * (alpha_max - alpha_min)
-
-    # σ = sqrt(1/α^2 - 1)
     sigmas = torch.sqrt(torch.clamp(1.0 / (alpha * alpha) - 1.0, min=0.0))
 
-    # Ensure descending order (from σ_max to σ_min) and include terminal 0
     sigmas, _ = torch.sort(sigmas, descending=True)
     sigmas[-1] = max(sigmas[-1].item(), sigma_min)
     sigmas = torch.cat([sigmas, torch.zeros(1)])
@@ -136,5 +138,6 @@ comfy.samplers.calculate_sigmas = patched_calculate
 NODE_CLASS_MAPPINGS = {}
 
 __all__ = ['NODE_CLASS_MAPPINGS']
+
 
 
