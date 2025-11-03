@@ -1,5 +1,5 @@
 # Momentum: Prediction agnostic. Velocity-based spacing: accelerates through stable regions, decelerates at critical transitions.
-# River: Designed for rectified flow. Step uniformly in alpha, then map to sigma via sigma = sqrt(1/Î±^2 - 1).
+# River: Designed for rectified flow. Step uniformly in alpha, then map to sigma.
 
 import torch
 import math
@@ -104,3 +104,4 @@ comfy.samplers.calculate_sigmas = patched_calculate
 NODE_CLASS_MAPPINGS = {}
 
 __all__ = ['NODE_CLASS_MAPPINGS']
+
