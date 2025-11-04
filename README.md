@@ -91,16 +91,6 @@ Third-order Ralston method with optimal error coefficients.
 **Bogacki**	  
 Third-order Bogacki-Shampine method.		  
 
-## Schedulers
-
-Loaded into KSampler's `scheduler` selector.	  
-
-**Biased**    
-Prediction agnostic. Spends more time in low sigma.    
-
-**River**    
-Designed for rectified flow. Step uniformly in alpha, then map to sigma via sigma = sqrt(1/α^2 - 1).     
-
 ## Latent & Prompt Tools
 
 **Structured Latent**    
@@ -109,6 +99,7 @@ Generate seeded empty latents with various initialization methods (perlin, gauss
 **Token Sculptor**  
 Strengthens prompt adherence by nudging CLIP embeddings toward soft top-k neighbor blends.  
 *Inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI)*  
+
 
 
 
