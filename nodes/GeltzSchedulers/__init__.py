@@ -1,4 +1,4 @@
-# Momentum: Prediction agnostic. Velocity-based spacing: accelerates through stable regions, decelerates at critical transitions.
+# Biased: Biased step distribution, more towards end.	
 # River: Designed for rectified flow. Step uniformly in alpha, then map to sigma.
 
 import torch
@@ -8,53 +8,27 @@ import comfy.samplers
 import comfy.k_diffusion.sampling as k_diffusion_sampling
 from comfy.samplers import KSampler
 
-def momentum_sigmas(model_sampling, steps, **kwargs):
+def biased_sigmas(model_sampling, steps, **kwargs):
     num_steps = int(steps)
     s = model_sampling
     start = s.timestep(s.sigma_max)
     end = s.timestep(s.sigma_min)
     
-    accel = float(kwargs.get("accel", 1.8))
-    damping = float(kwargs.get("damping", 0.3))
-    inertia = float(kwargs.get("inertia", 0.9))
+    # Control how much time we spend in high vs low sigma
+    bias = float(kwargs.get("bias", 1.3))  # >1 = more time in low sigma (less bright)
     
     append_zero = True
     if math.isclose(float(s.sigma(end)), 0, abs_tol=0.00001):
         num_steps += 1
         append_zero = False
     
-    # Simulate momentum-based traversal with velocity persistence
-    u = torch.zeros(num_steps, device=s.sigma_max.device)
-    velocity = 0.0
-    position = 0.0
-    
-    for i in range(num_steps):
-        # Acceleration varies by position (slower at ends)
-        force = accel * (1.0 - damping * abs(2.0 * position - 1.0))
-        # Normalize to [0, 1]
-        u = u / u[-1] if u[-1] > 0 else u
-        
-        timesteps = start + u * (end - start)
-        
-        sigmas = torch.tensor([float(s.sigma(ts)) for ts in timesteps])
-        
-        # Bias toward lower sigmas by adjusting the sigma distribution
-        sigmas = torch.pow(sigmas / sigmas[0], 1.2) * sigmas[0] if sigmas[0] > 0 else sigmas
-        
-        if append_zero:
-            sigmas = torch.cat([sigmas, torch.zeros(1)])
-        return sigmas
-        velocity = inertia * velocity + (1.0 - inertia) * force / num_steps
-        position += velocity / num_steps
-        position = min(position, 1.0)
-        u[i] = position
-    
-    # Normalize to [0, 1]
-    u = u / u[-1] if u[-1] > 0 else u
+    # Biased spacing: more steps near the end
+    u = torch.linspace(0, 1, num_steps, device=s.sigma_max.device)
+    u = torch.pow(u, bias)
     
     timesteps = start + u * (end - start)
-    
     sigmas = torch.tensor([float(s.sigma(ts)) for ts in timesteps])
+    
     if append_zero:
         sigmas = torch.cat([sigmas, torch.zeros(1)])
     return sigmas
@@ -93,11 +67,11 @@ def river_sigmas(model_sampling, steps, **kwargs):
     sigmas = torch.nan_to_num(sigmas, nan=0.0, posinf=sigma_max, neginf=0.0)
     return sigmas
 
-k_diffusion_sampling.get_sigmas_momentum = momentum_sigmas
+k_diffusion_sampling.get_sigmas_biased = biased_sigmas
 k_diffusion_sampling.get_sigmas_river = river_sigmas
 
 if hasattr(KSampler, 'SCHEDULERS') and isinstance(KSampler.SCHEDULERS, list):
-    for name in ["momentum", "river"]:
+    for name in ["biased", "river"]:
         if name not in KSampler.SCHEDULERS:
             KSampler.SCHEDULERS.append(name)
 
@@ -105,7 +79,7 @@ original_calculate = comfy.samplers.calculate_sigmas
 
 def patched_calculate(model_sampling, scheduler_name, steps):
     scheduler_map = {
-        'momentum': momentum_sigmas,
+        'biased': biased_sigmas,
         'river': river_sigmas,
     }
     if scheduler_name in scheduler_map:
@@ -117,6 +91,7 @@ comfy.samplers.calculate_sigmas = patched_calculate
 NODE_CLASS_MAPPINGS = {}
 
 __all__ = ['NODE_CLASS_MAPPINGS']
+
 
 
 
