@@ -64,7 +64,7 @@ Modification of NegPip that reflects negatives over neutral embeddings for symme
 Small edit of [PAG](https://arxiv.org/abs/2403.17377) with smart sigma-based scheduling.
 
 **Quantile Match Scaling**  
-Stabilizes guidance by matching frequency-band quantiles to conditional distribution.
+Pre-CFG model patch that frequency-matches the CFG output to the clean conditional to curb overdrive and keep textures stable.  
 
 **SADA Model Acceleration**  
 Skips redundant diffusion steps using trajectory stability analysis for faster sampling.  
@@ -73,8 +73,8 @@ Skips redundant diffusion steps using trajectory stability analysis for faster s
 **Spatial Split Attention**  
 Self-attention and cross-attention algorithm that equally weights left and right conditioning prompts, combining two regions with progressive convergence controlled by noise level.
 
-**Token Delta Perturbation**  
-Shuffles attention tokens using a scaled delta, with a cosine-decayed perturbation scale.  
+**Token Delta Perturbation**    
+UNet patch that runs a perturbed second pass and adds its delta to CFG to strengthen text/cond guidance without blowing up detail.  
 *Based on [Token Perturbation Guidance](https://arxiv.org/abs/2506.10036) with utilities from [ppm](https://github.com/pamparamm/ComfyUI-ppm)*
 
 ## Samplers
@@ -87,6 +87,14 @@ Third-order Ralston method with optimal error coefficients.
 **Bogacki**	  
 Third-order Bogacki-Shampine method.		  
 
+## Schedulers  
+
+**Cosine**  
+Warps timesteps to denoise more aggressively at the start for early cleanup.    
+
+**Nonlinear**  
+Uses a cosine-eased timestep progression for smooth, stable denoising.    
+
 ## Latent & Prompt Tools
 
 **Structured Latent**    
@@ -95,20 +103,6 @@ Generate seeded empty latents with various initialization methods (perlin, gauss
 **Token Sculptor**  
 Strengthens prompt adherence by nudging CLIP embeddings toward soft top-k neighbor blends.  
 *Inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI)*  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
