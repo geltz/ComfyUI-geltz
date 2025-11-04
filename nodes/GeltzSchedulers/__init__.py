@@ -31,6 +31,7 @@ def momentum_sigmas(model_sampling, steps, **kwargs):
     for i in range(num_steps):
         # Acceleration varies by position (slower at ends)
         force = accel * (1.0 - damping * abs(2.0 * position - 1.0))
+        u = torch.pow(u / u[-1], 0.85)  # Values < 1.0 bias toward end
         velocity = inertia * velocity + (1.0 - inertia) * force / num_steps
         position += velocity / num_steps
         position = min(position, 1.0)
@@ -104,4 +105,5 @@ comfy.samplers.calculate_sigmas = patched_calculate
 NODE_CLASS_MAPPINGS = {}
 
 __all__ = ['NODE_CLASS_MAPPINGS']
+
 
