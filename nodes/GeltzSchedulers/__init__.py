@@ -1,4 +1,4 @@
-# Biased: Biased step distribution, more towards end.	
+# Biased: Prediction agnostic. Spends more time in low sigma.    
 # River: Designed for rectified flow. Step uniformly in alpha, then map to sigma.
 
 import torch
@@ -91,6 +91,7 @@ comfy.samplers.calculate_sigmas = patched_calculate
 NODE_CLASS_MAPPINGS = {}
 
 __all__ = ['NODE_CLASS_MAPPINGS']
+
 
 
 
