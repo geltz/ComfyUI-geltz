@@ -39,8 +39,8 @@
 
 ## Schedulers
 
-* **Cosine**: Heavier early denoising.
-* **Nonlinear**: Cosine-eased stable steps.
+* **Cosine**: Cosine-eased stable steps.
+* **Nonlinear**: Heavier early denoising.
 
 ## Latent & Prompt
 
