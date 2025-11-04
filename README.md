@@ -34,7 +34,7 @@
 
 ## Samplers
 
-* **Ralston**: 3rd-order with optimal error.
+* **Ralston**: 3rd-order with optimal coefficients.
 * **Bogacki**: 3rd-order Bogacki-Shampine.
 
 ## Schedulers
@@ -46,5 +46,6 @@
 
 * **Structured Latent**: Seeded latents with perlin/gaussian/fractal.
 * **Token Sculptor**: Nudge CLIP embeddings toward soft top-k neighbors. Inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI).
+
 
 
