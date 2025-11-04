@@ -1,110 +1,48 @@
 ## Image Processing
 
-**Chromatic Aberration**	  
-Shifts red and blue channels by a pixel offset to create edge fringing.		  
-
-**Color Palette Extractor**  
-Extracts N dominant colors via MiniBatchKMeans and outputs palette image plus CSV of hex codes.	
-
-**FidelityFX Upscaler**  
-Lightweight AMD FidelityFX CAS upscaler that auto-downloads the CLI (uses Wine on non-Windows) and supports target scale with adjustable sharpness.	
-
-**Film Grain**	  
-Luma-weighted, band-limited, linear-light grain with shadow/midtone weighting, Poisson-like scaling, deterministic seeding, and RGB-consistent noise.	  
-
-**Kuwahara Filter**  
-Fast edge-preserving filter selecting mean color from the minimum-variance quadrant.
-
-**L₀ Smoothing Filter**  
-Global edge-aware smoothing that flattens regions while preserving sharp boundaries.
-
-**Local Laplacian Filter**  
-Halo-free detail/tone manipulation via Laplacian pyramids with separable Gaussian blurs.
-
-**Palette Filter**  
-Builds a 3D LUT via sliced optimal transport from a reference image and applies it as a controllable color grade.
-
-**Temperature Adjust**  
-LAB-space white-balance adjustment with HSV saturation compensation, range -1.0…+1.0.
-
-**UNet Heatmap**  
-Turns denoised UNet latents into a thermal heatmap via L2 magnitude normalization, bicubic upscaling, and unsharp masking.
+* **Chromatic Aberration**: Shift RGB channels for edge fringing.
+* **Color Palette Extractor**: Find N dominant colors; exports palette image + CSV.
+* **FidelityFX Upscaler**: AMD CAS upscaler (auto CLI download, Wine on non-Windows), target scale, sharpness control.
+* **Film Grain**: Luma-weighted, band-limited grain with tone weighting and deterministic seed.
+* **Kuwahara Filter**: Fast edge-preserving smoothing.
+* **L₀ Smoothing**: Global flattening while keeping edges.
+* **Local Laplacian**: Halo-free detail/tone edits via Laplacian pyramid.
+* **Palette Filter**: 3D LUT from reference image using sliced OT; adjustable grade.
+* **Temperature Adjust**: LAB white balance with saturation compensation (-1.0…+1.0).
+* **UNet Heatmap**: Convert denoised UNet latents to thermal map (normalize, upscale, sharpen).
 
 ## Metadata & Utilities
 
-**Image Metadata Extractor**  
-Reads PNG/TIFF info and outputs normalized prompt/settings summary as a single string.
+* **Image Metadata Extractor**: Read PNG/TIFF, output normalized prompt/settings string.
+* **Kohya LoRA Config**: Parse LoRA header to JSON; compatible with kohya sd-scripts.
+* **Load Image With Metadata**: Load image, mask, and extracted text.
+* **Token Visualizer**: Show token influence as 2D wave.
 
-**Kohya Lora Config**  
-Parses a LoRA's header and extracts human-readable metadata as JSON.  
-*Output compatible with [Kohya's sd-scripts](https://github.com/kohya-ss/sd-scripts)*
+## Model & LoRA
 
-**Load Image With Metadata**  
-Loads image with embedded prompts/settings extraction, returns image, mask, and metadata text.
-
-**Token Visualizer**  
-Visualizes token influence via 2D wave path with normalized spikes.
-
-## Model & LoRA Tools
-
-**Load LoRA (SDXL Blocks)**  
-Allows setting block weights for an SDXL LoRA. Useful to avoid structural changes but keep the style i.e. only weighting input blocks.
-
-**LoRA Extract**  
-Extracts the difference between two models as a LoRA with adjustable rank.  
-*Uses the [sd-mecha](https://github.com/ljleb/sd-mecha) API*  
+* **Load LoRA (SDXL Blocks)**: Set per-block weights to keep structure but tune style.
+* **LoRA Extract**: Diff two models into a LoRA with adjustable rank (via sd-mecha).
 
 ## Sampling & Guidance
 
-**NegPip+**  
-Modification of NegPip that reflects negatives over neutral embeddings for symmetric repulsion, fixes z_empty indexing, and limits effect to actual tokens.  
-*Based on the implementation from [ppm](https://github.com/pamparamm/ComfyUI-ppm)*
-
-**Perturbed Attention Delta**  
-Small edit of [PAG](https://arxiv.org/abs/2403.17377) with smart sigma-based scheduling.
-
-**Quantile Match Scaling**  
-Pre-CFG model patch that frequency-matches the CFG output to the clean conditional to curb overdrive and keep textures stable.  
-
-**SADA Model Acceleration**  
-Skips redundant diffusion steps using trajectory stability analysis for faster sampling.  
-*Based on [Stability-guided Adaptive Diffusion Acceleration](https://arxiv.org/abs/2507.17135)*
-
-**Spatial Split Attention**  
-Self-attention and cross-attention algorithm that equally weights left and right conditioning prompts, combining two regions with progressive convergence controlled by noise level.
-
-**Token Delta Perturbation**    
-UNet patch that runs a perturbed second pass and adds its delta to CFG to strengthen text/cond guidance without blowing up detail.  
-*Based on [Token Perturbation Guidance](https://arxiv.org/abs/2506.10036) with utilities from [ppm](https://github.com/pamparamm/ComfyUI-ppm)*
+* **NegPip+**: Symmetric negative repulsion with fixed indexing, limited to real tokens.
+* **Perturbed Attention Delta**: PAG variant with sigma scheduling.
+* **Quantile Match Scaling**: Match CFG freq to clean cond to avoid overdrive.
+* **SADA Acceleration**: Skip diffusion steps using trajectory stability.
+* **Spatial Split Attention**: Balance prompts over left/right regions with progressive merge.
+* **Token Delta Perturbation**: Second UNet pass added to CFG for stronger guidance.
 
 ## Samplers
 
-Loaded into KSampler's `sampler` selector.	  
+* **Ralston**: 3rd-order with optimal error.
+* **Bogacki**: 3rd-order Bogacki-Shampine.
 
-**Ralston**	  
-Third-order Ralston method with optimal error coefficients.		   
+## Schedulers
 
-**Bogacki**	  
-Third-order Bogacki-Shampine method.		  
+* **Cosine**: Heavier early denoising.
+* **Nonlinear**: Cosine-eased stable steps.
 
-## Schedulers  
+## Latent & Prompt
 
-**Cosine**  
-Warps timesteps to denoise more aggressively at the start for early cleanup.    
-
-**Nonlinear**  
-Uses a cosine-eased timestep progression for smooth, stable denoising.    
-
-## Latent & Prompt Tools
-
-**Structured Latent**    
-Generate seeded empty latents with various initialization methods (perlin, gaussian, fractal, etc.)
-
-**Token Sculptor**  
-Strengthens prompt adherence by nudging CLIP embeddings toward soft top-k neighbor blends.  
-*Inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI)*  
-
-
-
-
-
+* **Structured Latent**: Seeded latents with perlin/gaussian/fractal.
+* **Token Sculptor**: Nudge CLIP embeddings toward soft top-k neighbors.
