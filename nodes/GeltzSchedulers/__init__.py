@@ -39,7 +39,7 @@ def momentum_sigmas(model_sampling, steps, **kwargs):
         sigmas = torch.tensor([float(s.sigma(ts)) for ts in timesteps])
         
         # Bias toward lower sigmas by adjusting the sigma distribution
-        sigmas = torch.pow(sigmas / sigmas[0], 0.85) * sigmas[0] if sigmas[0] > 0 else sigmas
+        sigmas = torch.pow(sigmas / sigmas[0], 1.2) * sigmas[0] if sigmas[0] > 0 else sigmas
         
         if append_zero:
             sigmas = torch.cat([sigmas, torch.zeros(1)])
@@ -117,6 +117,7 @@ comfy.samplers.calculate_sigmas = patched_calculate
 NODE_CLASS_MAPPINGS = {}
 
 __all__ = ['NODE_CLASS_MAPPINGS']
+
 
 
 
