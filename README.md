@@ -2,14 +2,14 @@
 
 * **Chromatic Aberration**: Shift RGB channels for edge fringing.
 * **Color Palette Extractor**: Find N dominant colors; exports palette image + CSV.
-* **FidelityFX Upscaler**: AMD CAS upscaler (auto CLI download, Wine on non-Windows), target scale, sharpness control.
+* **FidelityFX Upscaler**: AMD CAS upscaler, target scale, sharpness control.
 * **Film Grain**: Luma-weighted, band-limited grain with tone weighting and deterministic seed.
 * **Kuwahara Filter**: Fast edge-preserving smoothing.
 * **L₀ Smoothing**: Global flattening while keeping edges.
 * **Local Laplacian**: Halo-free detail/tone edits via Laplacian pyramid.
 * **Palette Filter**: 3D LUT from reference image using sliced OT; adjustable grade.
 * **Temperature Adjust**: LAB white balance with saturation compensation (-1.0…+1.0).
-* **UNet Heatmap**: Convert denoised UNet latents to thermal map (normalize, upscale, sharpen).
+* **UNet Heatmap**: Convert denoised UNet latents to thermal map.
 
 ## Metadata & Utilities
 
@@ -46,4 +46,5 @@
 
 * **Structured Latent**: Seeded latents with perlin/gaussian/fractal.
 * **Token Sculptor**: Nudge CLIP embeddings toward soft top-k neighbors. Inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI).
+
 
