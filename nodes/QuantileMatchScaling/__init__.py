@@ -10,7 +10,6 @@ def _adaptive_freq_cutoffs(h: int, w: int, _unused=None) -> tuple[float, float]:
     Return normalized low/high cutoffs in [0, 0.5].
     Keeps it simple and resolution-agnostic.
     """
-    # tuned for SD-ish resolutions; adjust if you want finer control
     low_cut = 0.12
     high_cut = 0.35
     return low_cut, high_cut
@@ -354,3 +353,4 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "QuantileMatchScaling": "Quantile Match Scaling",
 }
+
