@@ -42,8 +42,9 @@
 
 ## Latent & Prompt
 
-* **Structured Latent**: Seeded latents with perlin/gaussian/fractal.
+* **Structured Latent**: Seeded latents with various methods. My personal favorite is `smooth_gradient`.
 * **Token Sculptor**: Nudge CLIP embeddings toward soft top-k neighbors. Inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI).
+
 
 
 
