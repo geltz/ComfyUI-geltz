@@ -29,8 +29,7 @@
 * **Perturbed Attention Delta**: [PAG](https://arxiv.org/abs/2403.17377) variant with sigma scheduling.
 * **Quantile Match Scaling**: Match CFG freq to clean cond to avoid overdrive.
 * **SADA Acceleration**: Skip diffusion steps using trajectory stability. Based on [Stability-guided Adaptive Diffusion Acceleration](https://arxiv.org/abs/2507.17135).
-* **Spatial Split Attention**: Balance prompts over left/right regions with progressive merge.
-* **Token Delta Perturbation**: Second UNet pass added to CFG for stronger guidance. Based on [Token Perturbation Guidance](https://arxiv.org/abs/2506.10036) and utilities from [ComfyUI-ppm](https://github.com/pamparamm/ComfyUI-ppm).
+* **Spatial Split Attention**: Balance prompts over left/right regions with progressive merge.  
 
 ## Samplers
 
@@ -46,6 +45,7 @@
 
 * **Structured Latent**: Seeded latents with perlin/gaussian/fractal.
 * **Token Sculptor**: Nudge CLIP embeddings toward soft top-k neighbors. Inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI).
+
 
 
 
