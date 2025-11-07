@@ -3,7 +3,6 @@
 * **Chromatic Aberration**: Shift RGB channels for edge fringing.
 * **Color Palette Extractor**: Find N dominant colors; exports palette image + CSV.
 * **FidelityFX Upscaler**: AMD CAS upscaler, target scale, sharpness control.
-* **Film Grain**: Luma-weighted, band-limited grain with tone weighting and deterministic seed.
 * **Kuwahara Filter**: Fast edge-preserving smoothing.
 * **L₀ Smoothing**: Global flattening while keeping edges.
 * **Local Laplacian**: Halo-free detail/tone edits via Laplacian pyramid.
@@ -45,6 +44,7 @@
 
 * **Structured Latent**: Seeded latents with perlin/gaussian/fractal.
 * **Token Sculptor**: Nudge CLIP embeddings toward soft top-k neighbors. Inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI).
+
 
 
 
