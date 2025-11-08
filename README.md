@@ -82,13 +82,14 @@
 ## Latent & Prompt
 
 * **Danbooru Tags Transformer**    
-  Implementation of https://github.com/p1atdev/danbooru-tags-transformer as a single node.        
+  Implementation of [DART](https://github.com/p1atdev/danbooru-tags-transformer) as a single node.        
 
 * **Structured Latent**    
   Creates seeded latents using several methods (favorite one is `smooth_gradient`).
 
 * **Token Sculptor**    
   Adjusts CLIP embeddings toward soft top‑k neighbors, inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI), to fine‑tune how text concepts appear in the final image.
+
 
 
 
