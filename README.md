@@ -61,10 +61,7 @@
   Matches CFG frequency to the clean condition to avoid overdriving guidance when prompts are strong.
 
 * **SADA Acceleration**    
-  Skips diffusion steps based on trajectory stability, following the idea in [Stability-guided Adaptive Diffusion Acceleration](https://arxiv.org/abs/2507.17135). Aims to reduce steps while preserving the intended look.
-
-* **Spatial Split Attention**    
-  Splits attention into left/right regions and merges them progressively, which makes it easier to balance prompts over different parts of the image.
+  Skips diffusion steps based on trajectory stability, following the idea in [Stability-guided Adaptive Diffusion Acceleration](https://arxiv.org/abs/2507.17135). Aims to reduce steps while preserving the intended look.  
 
 ## Samplers
 
@@ -89,5 +86,6 @@
 
 * **Token Sculptor**    
   Adjusts CLIP embeddings toward soft top‑k neighbors, inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI), to fine‑tune how text concepts appear in the final image.
+
 
 
