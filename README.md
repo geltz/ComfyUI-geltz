@@ -77,7 +77,7 @@
   Cosine-eased schedule for steady denoising.
 
 * **Nonlinear**    
-  Front-loads denoising early to clean up the image sooner.
+  Front-loads denoising early, can be unstable.
 
 ## Latent & Prompt
 
@@ -89,6 +89,7 @@
 
 * **Token Sculptor**    
   Adjusts CLIP embeddings toward soft top‑k neighbors, inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI), to fine‑tune how text concepts appear in the final image.
+
 
 
 
