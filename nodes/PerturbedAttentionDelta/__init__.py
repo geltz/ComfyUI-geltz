@@ -9,7 +9,7 @@ class PerturbedAttentionDelta:
         return {
             "required": {
                 "model": ("MODEL",),
-                "scale": ("FLOAT", {"default": 5.0, "min": 0.0, "max": 100.0, "step": 0.01}),
+                "scale": ("FLOAT", {"default": 3.0, "min": 0.0, "max": 100.0, "step": 0.01}),
                 "min_scale_ratio": (
                     "FLOAT",
                     {"default": 0.5, "min": 0.0, "max": 2.0, "step": 0.01},
@@ -188,5 +188,6 @@ NODE_CLASS_MAPPINGS = {"PerturbedAttentionDelta": PerturbedAttentionDelta}
 NODE_DISPLAY_NAME_MAPPINGS = {
     "PerturbedAttentionDelta": "Perturbed Attention Delta"
 }
+
 
 
