@@ -1,5 +1,5 @@
 [project]
-name = "ComfyUI-geltz"
+name = "comfyui-geltz"
 description = "Image processing, LoRA metadata, schedulers, guidance, latents."
 version = "1.0.0"
 license = { file = "LICENSE" }
@@ -9,5 +9,5 @@ Repository = "https://github.com/geltz/comfyui-geltz"
 
 [tool.comfy]
 PublisherId = "geltz"
-DisplayName = "ComfyUI-geltz"
+DisplayName = "comfyui-geltz"
 Icon = ""
