@@ -60,14 +60,6 @@
 * **SADA Acceleration**    
   Skips diffusion steps based on trajectory stability, following the idea in [Stability-guided Adaptive Diffusion Acceleration](https://arxiv.org/abs/2507.17135). Aims to reduce steps while preserving the intended look.  
 
-## Samplers
-
-* **Ralston**    
-  Third-order sampler tuned for stable refinement.
-
-* **Bogacki**    
-  Third-order Bogacki–Shampine variant that produces smooth, predictable updates.
-
 ## Schedulers
 
 * **Cosine**    
@@ -86,6 +78,7 @@
 
 * **Token Sculptor**    
   Adjusts CLIP embeddings toward soft top‑k neighbors, inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI), to fine‑tune how text concepts appear in the final image.
+
 
 
 
