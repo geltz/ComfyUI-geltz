@@ -51,9 +51,6 @@
 
 ## Sampling & Guidance
 
-* **NegPip+**        
-  Symmetric negative guidance with fixed indexing, limited to real tokens. Helps keep specific unwanted features out. Based on [ComfyUI-ppm](https://github.com/pamparamm/ComfyUI-ppm).
-
 * **Perturbed Attention Delta**    
   A [PAG](https://arxiv.org/abs/2403.17377)-style attention method with sigma scheduling that adds controlled variation while staying near the main diffusion path.
 
@@ -89,6 +86,7 @@
 
 * **Token Sculptor**    
   Adjusts CLIP embeddings toward soft top‑k neighbors, inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI), to fine‑tune how text concepts appear in the final image.
+
 
 
 
