@@ -85,10 +85,11 @@
   Implementation of [DART](https://github.com/p1atdev/danbooru-tags-transformer) as a single node.        
 
 * **Structured Latent**    
-  Creates seeded latents using several methods (I recommend `smooth_gradient`).
+  Creates seeded latents using several methods. Recommended: `smooth_gradient`.
 
 * **Token Sculptor**    
   Adjusts CLIP embeddings toward soft top‑k neighbors, inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI), to fine‑tune how text concepts appear in the final image.
+
 
 
 
