@@ -18,7 +18,10 @@ def _extract_timestep_seed(extra_options):
                 else:
                     val = val.flatten()[0].item()
             try:
-                return int(float(val)) % (2**31)
+                # Clamp to buckets of 10 to avoid float drift
+                raw = int(float(val))
+                clamped = (raw // 10) * 10
+                return clamped % (2**31)
             except Exception:
                 return None
     return None
@@ -96,6 +99,21 @@ class TokenShuffler:
             seed_val = _extract_timestep_seed(extra_options)
             if seed_val is None:
                 return _vanilla_attention(q, k, v, mask)
+            
+            # Disable shuffle during late denoising (high timesteps)
+            raw_timestep = None
+            if extra_options is not None:
+                for key in ("timestep", "timesteps"):
+                    if key in extra_options and extra_options[key] is not None:
+                        fv = extra_options[key]
+                        if isinstance(fv, torch.Tensor):
+                            fv = fv.flatten()[0].item()
+                        raw_timestep = float(fv)
+                        break
+            
+            # Skip shuffle if timestep > 900 (last 10% of typical diffusion)
+            if raw_timestep is not None and raw_timestep > 900:
+                return _vanilla_attention(q, k, v, mask)
         
             # derive gate from higher-res float (timestep/sigma) instead of the int
             gate_seed = None
@@ -114,39 +132,39 @@ class TokenShuffler:
             gate = _det_rand_from_seed(gate_seed, 0)
             if gate >= shuffle_prob or shuffle_strength <= 0.0:
                 return _vanilla_attention(q, k, v, mask)
-
+        
             # build index perms
             if q.dim() == 3:
                 # (bh, t, d)
                 bh, tq, d = q.shape
                 tk = k.shape[1]
                 tv = v.shape[1]
-
+        
                 q_perm = _get_perm_indices(tq, q.device, q.dtype, seed_val, 17)
                 k_perm = _get_perm_indices(tk, k.device, k.dtype, seed_val, 37)
                 v_perm = _get_perm_indices(tv, v.device, v.dtype, seed_val, 59)
-
+        
                 q = _apply_perm_indexed(q, q_perm, shuffle_strength)
                 k = _apply_perm_indexed(k, k_perm, shuffle_strength)
                 v = _apply_perm_indexed(v, v_perm, shuffle_strength)
-
+        
             elif q.dim() == 4:
                 # (b, h, t, d)
                 b, h, tq, d = q.shape
                 tk = k.shape[2]
                 tv = v.shape[2]
-
+        
                 q_perm = _get_perm_indices(tq, q.device, q.dtype, seed_val, 17)
                 k_perm = _get_perm_indices(tk, k.device, k.dtype, seed_val, 37)
                 v_perm = _get_perm_indices(tv, v.device, v.dtype, seed_val, 59)
-
+        
                 q = _apply_perm_indexed(q, q_perm, shuffle_strength)
                 k = _apply_perm_indexed(k, k_perm, shuffle_strength)
                 v = _apply_perm_indexed(v, v_perm, shuffle_strength)
             else:
                 # unknown layout -> just do vanilla
                 return _vanilla_attention(q, k, v, mask)
-
+        
             # final standard attention
             return _vanilla_attention(q, k, v, mask)
 
@@ -242,5 +260,6 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "TokenShuffler": "Token Shuffler",
 }
+
 
 
