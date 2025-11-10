@@ -92,16 +92,27 @@ class TokenShuffler:
         m = model.clone()
 
         def token_shuffle_attention(q, k, v, extra_options=None, mask=None, **kwargs):
-            # extract timestep ONCE
+            # extract timestep ONCE for perms
             seed_val = _extract_timestep_seed(extra_options)
             if seed_val is None:
-                # fall back to vanilla attention
                 return _vanilla_attention(q, k, v, mask)
-
-            # deterministic gate tied to timestep
-            gate = _det_rand_from_seed(seed_val, 0)
+        
+            # derive gate from higher-res float (timestep/sigma) instead of the int
+            gate_seed = None
+            if extra_options is not None:
+                for key in ("timestep", "timesteps", "sigma", "sigmas"):
+                    if key in extra_options and extra_options[key] is not None:
+                        fv = extra_options[key]
+                        if isinstance(fv, torch.Tensor):
+                            fv = fv.flatten()[0].item()
+                        # bucket more finely than int(...)
+                        gate_seed = int(float(fv) * 1000.0) % (2**31)
+                        break
+            if gate_seed is None:
+                gate_seed = seed_val  # fallback
+        
+            gate = _det_rand_from_seed(gate_seed, 0)
             if gate >= shuffle_prob or shuffle_strength <= 0.0:
-                # requirement: don't build perms / don't do extra work on the prob-miss path
                 return _vanilla_attention(q, k, v, mask)
 
             # build index perms
@@ -231,4 +242,5 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "TokenShuffler": "Token Shuffler",
 }
+
 
