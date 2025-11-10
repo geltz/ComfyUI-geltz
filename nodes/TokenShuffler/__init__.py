@@ -2,8 +2,9 @@ import math
 import torch
 import comfy.model_patcher
 
-# (tok_len, device_str, dtype_str, seed, salt) -> 1D perm tensor
+# (tok_len, device_str, dtype_str, seed, salt, epoch) -> 1D perm tensor
 _PERM_CACHE = {}
+_PERM_EPOCH = 0  # bumped once per “run”
 
 
 def _extract_timestep_seed(extra_options):
@@ -32,19 +33,29 @@ def _det_rand_from_seed(seed: int, salt: int) -> float:
     x ^= (x >> 15)
     return (x & 0xFFFFFFFF) / 0xFFFFFFFF
 
+def start_perm_epoch(clear_cache: bool = False):
+    """
+    Call this once per Comfy run / image / graph execution.
+    """
+    global _PERM_EPOCH
+    _PERM_EPOCH += 1
+    if clear_cache:
+        _PERM_CACHE.clear()
+
 
 def _get_perm_indices(tok_len: int, device, dtype, seed: int, salt: int):
-    key = (tok_len, str(device), str(dtype), seed, salt)
+    # epoch is part of the key to prevent old runs from reusing perms
+    key = (tok_len, str(device), str(dtype), seed, salt, _PERM_EPOCH)
     perm = _PERM_CACHE.get(key, None)
     if perm is not None:
-        return perm
+        # return a clone so nobody mutates the cached tensor by accident
+        return perm.clone()
 
     g = torch.Generator(device=device)
     g.manual_seed(seed ^ (salt * 0x9E3779B9))
     perm = torch.randperm(tok_len, generator=g, device=device)
     _PERM_CACHE[key] = perm
     return perm
-
 
 def _apply_perm_indexed(x: torch.Tensor, perm: torch.Tensor, strength: float) -> torch.Tensor:
     # x: (..., T, D), perm: (T,)
@@ -231,6 +242,7 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "TokenShuffler": "Token Shuffler",
 }
+
 
 
 
