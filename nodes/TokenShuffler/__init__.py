@@ -91,111 +91,123 @@ class TokenShuffler:
     FUNCTION = "patch"
     CATEGORY = "model_patches/unet"
 
-    def patch(self, model, shuffle_prob=0.5, shuffle_strength=1.0):
-        m = model.clone()
+def patch(self, model, shuffle_prob=0.5, shuffle_strength=1.0):
+    m = model.clone()
 
-        def token_shuffle_attention(q, k, v, extra_options=None, mask=None, **kwargs):
-            # extract timestep ONCE for perms
-            seed_val = _extract_timestep_seed(extra_options)
-            if seed_val is None:
-                return _vanilla_attention(q, k, v, mask)
-            
-            # Disable shuffle during late denoising (high timesteps)
-            raw_timestep = None
-            if extra_options is not None:
-                for key in ("timestep", "timesteps"):
-                    if key in extra_options and extra_options[key] is not None:
-                        fv = extra_options[key]
-                        if isinstance(fv, torch.Tensor):
-                            fv = fv.flatten()[0].item()
-                        raw_timestep = float(fv)
-                        break
-            
-            # Skip shuffle if timestep > 900 (last 10% of typical diffusion)
-            if raw_timestep is not None and raw_timestep > 900:
-                return _vanilla_attention(q, k, v, mask)
+    def token_shuffle_attention(q, k, v, extra_options=None, mask=None, **kwargs):
+        # extract timestep ONCE for perms
+        seed_val = _extract_timestep_seed(extra_options)
+        if seed_val is None:
+            return _vanilla_attention(q, k, v, mask)
         
-            # derive gate from higher-res float (timestep/sigma) instead of the int
-            gate_seed = None
-            if extra_options is not None:
-                for key in ("timestep", "timesteps", "sigma", "sigmas"):
-                    if key in extra_options and extra_options[key] is not None:
-                        fv = extra_options[key]
-                        if isinstance(fv, torch.Tensor):
-                            fv = fv.flatten()[0].item()
-                        # bucket more finely than int(...)
-                        gate_seed = int(float(fv) * 1000.0) % (2**31)
-                        break
-            if gate_seed is None:
-                gate_seed = seed_val  # fallback
+        # Disable shuffle during late denoising (high timesteps)
+        raw_timestep = None
+        if extra_options is not None:
+            for key in ("timestep", "timesteps"):
+                if key in extra_options and extra_options[key] is not None:
+                    fv = extra_options[key]
+                    if isinstance(fv, torch.Tensor):
+                        fv = fv.flatten()[0].item()
+                    raw_timestep = float(fv)
+                    break
         
-            gate = _det_rand_from_seed(gate_seed, 0)
-            if gate >= shuffle_prob or shuffle_strength <= 0.0:
-                return _vanilla_attention(q, k, v, mask)
-        
-            # build index perms
-            if q.dim() == 3:
-                # (bh, t, d)
-                bh, tq, d = q.shape
-                tk = k.shape[1]
-                tv = v.shape[1]
-        
-                q_perm = _get_perm_indices(tq, q.device, q.dtype, seed_val, 17)
-                k_perm = _get_perm_indices(tk, k.device, k.dtype, seed_val, 37)
-                v_perm = _get_perm_indices(tv, v.device, v.dtype, seed_val, 59)
-        
-                q = _apply_perm_indexed(q, q_perm, shuffle_strength)
-                k = _apply_perm_indexed(k, k_perm, shuffle_strength)
-                v = _apply_perm_indexed(v, v_perm, shuffle_strength)
-        
-            elif q.dim() == 4:
-                # (b, h, t, d)
-                b, h, tq, d = q.shape
-                tk = k.shape[2]
-                tv = v.shape[2]
-        
-                q_perm = _get_perm_indices(tq, q.device, q.dtype, seed_val, 17)
-                k_perm = _get_perm_indices(tk, k.device, k.dtype, seed_val, 37)
-                v_perm = _get_perm_indices(tv, v.device, v.dtype, seed_val, 59)
-        
-                q = _apply_perm_indexed(q, q_perm, shuffle_strength)
-                k = _apply_perm_indexed(k, k_perm, shuffle_strength)
-                v = _apply_perm_indexed(v, v_perm, shuffle_strength)
-            else:
-                # unknown layout -> just do vanilla
-                return _vanilla_attention(q, k, v, mask)
-        
-            # final standard attention
+        # Skip shuffle if timestep > 900 (last 10% of typical diffusion)
+        if raw_timestep is not None and raw_timestep > 900:
+            return _vanilla_attention(q, k, v, mask)
+    
+        # derive gate from higher-res float (timestep/sigma) instead of the int
+        gate_seed = None
+        if extra_options is not None:
+            for key in ("timestep", "timesteps", "sigma", "sigmas"):
+                if key in extra_options and extra_options[key] is not None:
+                    fv = extra_options[key]
+                    if isinstance(fv, torch.Tensor):
+                        fv = fv.flatten()[0].item()
+                    # bucket more finely than int(...)
+                    gate_seed = int(float(fv) * 1000.0) % (2**31)
+                    break
+        if gate_seed is None:
+            gate_seed = seed_val  # fallback
+    
+        gate = _det_rand_from_seed(gate_seed, 0)
+        if gate >= shuffle_prob or shuffle_strength <= 0.0:
             return _vanilla_attention(q, k, v, mask)
 
-        def _vanilla_attention(q, k, v, mask):
-            if q.dim() == 3:
-                # (bh, t, d)
-                bh, tq, d = q.shape
-                tk = k.shape[1]
-                scale = 1.0 / math.sqrt(d)
-                scores = torch.bmm(q, k.transpose(1, 2)) * scale  # (bh, tq, tk)
-                if mask is not None:
-                    scores = scores + mask
-                attn = torch.softmax(scores, dim=-1)
-                out = torch.bmm(attn, v)
-                return out
-            elif q.dim() == 4:
-                # (b, h, t, d)
-                b, h, tq, d = q.shape
-                scale = 1.0 / math.sqrt(d)
-                scores = torch.matmul(q, k.transpose(-2, -1)) * scale  # (b, h, tq, tk)
-                if mask is not None:
-                    scores = scores + mask
-                attn = torch.softmax(scores, dim=-1)
-                out = torch.matmul(attn, v)
-                return out
-            else:
-                return q
+        # build index perms
+        if q.dim() == 3:
+            # (bh, t, d)
+            bh, tq, d = q.shape
+            tk = k.shape[1]
+            tv = v.shape[1]
 
-        mo = m.model_options
+            q_perm = _get_perm_indices(tq, q.device, q.dtype, seed_val, 17)
+            k_perm = _get_perm_indices(tk, k.device, k.dtype, seed_val, 37)
+            v_perm = _get_perm_indices(tv, v.device, v.dtype, seed_val, 59)
 
-        # 1) middle block
+            q = _apply_perm_indexed(q, q_perm, shuffle_strength)
+            k = _apply_perm_indexed(k, k_perm, shuffle_strength)
+            v = _apply_perm_indexed(v, v_perm, shuffle_strength)
+
+        elif q.dim() == 4:
+            # (b, h, t, d)
+            b, h, tq, d = q.shape
+            tk = k.shape[2]
+            tv = v.shape[2]
+
+            q_perm = _get_perm_indices(tq, q.device, q.dtype, seed_val, 17)
+            k_perm = _get_perm_indices(tk, k.device, k.dtype, seed_val, 37)
+            v_perm = _get_perm_indices(tv, v.device, v.dtype, seed_val, 59)
+
+            q = _apply_perm_indexed(q, q_perm, shuffle_strength)
+            k = _apply_perm_indexed(k, k_perm, shuffle_strength)
+            v = _apply_perm_indexed(v, v_perm, shuffle_strength)
+        else:
+            # unknown layout -> just do vanilla
+            return _vanilla_attention(q, k, v, mask)
+
+        # final standard attention
+        return _vanilla_attention(q, k, v, mask)
+
+    def _vanilla_attention(q, k, v, mask):
+        if q.dim() == 3:
+            # (bh, t, d)
+            bh, tq, d = q.shape
+            tk = k.shape[1]
+            scale = 1.0 / math.sqrt(d)
+            scores = torch.bmm(q, k.transpose(1, 2)) * scale  # (bh, tq, tk)
+            if mask is not None:
+                scores = scores + mask
+            attn = torch.softmax(scores, dim=-1)
+            out = torch.bmm(attn, v)
+            return out
+        elif q.dim() == 4:
+            # (b, h, t, d)
+            b, h, tq, d = q.shape
+            scale = 1.0 / math.sqrt(d)
+            scores = torch.matmul(q, k.transpose(-2, -1)) * scale  # (b, h, tq, tk)
+            if mask is not None:
+                scores = scores + mask
+            attn = torch.softmax(scores, dim=-1)
+            out = torch.matmul(attn, v)
+            return out
+        else:
+            return q
+
+    mo = m.model_options
+
+    # 1) middle block
+    try:
+        mo = comfy.model_patcher.set_model_options_patch_replace(
+            mo,
+            token_shuffle_attention,
+            "attn2",
+            "middle",
+            0,
+        )
+    except Exception:
+        pass
+    # middle often has several transformer indices
+    for tidx in (0, 1, 2, 3):
         try:
             mo = comfy.model_patcher.set_model_options_patch_replace(
                 mo,
@@ -203,54 +215,42 @@ class TokenShuffler:
                 "attn2",
                 "middle",
                 0,
+                transformer_index=tidx,
             )
         except Exception:
             pass
-        # middle often has several transformer indices
-        for tidx in (0, 1, 2, 3):
-            try:
-                mo = comfy.model_patcher.set_model_options_patch_replace(
-                    mo,
-                    token_shuffle_attention,
-                    "attn2",
-                    "middle",
-                    0,
-                    transformer_index=tidx,
-                )
-            except Exception:
-                pass
 
-        # 2) input block 2 (d2) — exclude 2.0 and 2.1
-        # we try a few transformer indices; 0/1 excluded
-        for tidx in (2, 3, 4, 5):
-            try:
-                mo = comfy.model_patcher.set_model_options_patch_replace(
-                    mo,
-                    token_shuffle_attention,
-                    "attn2",
-                    "input",
-                    2,
-                    transformer_index=tidx,
-                )
-            except Exception:
-                pass
+    # 2) input block 2 (d2) – exclude 2.0 and 2.1
+    # we try a few transformer indices; 0/1 excluded
+    for tidx in (2, 3, 4, 5):
+        try:
+            mo = comfy.model_patcher.set_model_options_patch_replace(
+                mo,
+                token_shuffle_attention,
+                "attn2",
+                "input",
+                2,
+                transformer_index=tidx,
+            )
+        except Exception:
+            pass
 
-        # 3) input block 3 (d3) — patch all common transformer indices
-        for tidx in (0, 1, 2, 3, 4):
-            try:
-                mo = comfy.model_patcher.set_model_options_patch_replace(
-                    mo,
-                    token_shuffle_attention,
-                    "attn2",
-                    "input",
-                    3,
-                    transformer_index=tidx,
-                )
-            except Exception:
-                pass
+    # 3) input block 3 (d3) – patch all common transformer indices
+    for tidx in (0, 1, 2, 3, 4):
+        try:
+            mo = comfy.model_patcher.set_model_options_patch_replace(
+                mo,
+                token_shuffle_attention,
+                "attn2",
+                "input",
+                3,
+                transformer_index=tidx,
+            )
+        except Exception:
+            pass
 
-        m.model_options = mo
-        return (m,)
+    m.model_options = mo
+    return (m,)
 
 
 NODE_CLASS_MAPPINGS = {
@@ -260,6 +260,7 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "TokenShuffler": "Token Shuffler",
 }
+
 
 
 
