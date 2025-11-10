@@ -1,5 +1,8 @@
 ## Image Processing
 
+* **Apply LUT**
+  Simple node that applies a LUT file (looks in `models/lut`) with interpolation.  
+
 * **Chromatic Aberration**    
   Shifts the red, green, and blue channels separately to create controlled edge fringing. Good for adding a subtle lens-like imperfection without blurring the whole frame.    
 
@@ -78,6 +81,7 @@
 
 * **Token Sculptor**    
   Adjusts CLIP embeddings toward soft top‑k neighbors, inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI), to fine‑tune how text concepts appear in the final image.
+
 
 
 
