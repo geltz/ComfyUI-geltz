@@ -18,10 +18,7 @@ def _extract_timestep_seed(extra_options):
                 else:
                     val = val.flatten()[0].item()
             try:
-                # Clamp to buckets of 10 to avoid float drift
-                raw = int(float(val))
-                clamped = (raw // 10) * 10
-                return clamped % (2**31)
+                return int(float(val)) % (2**31)
             except Exception:
                 return None
     return None
@@ -95,42 +92,16 @@ class TokenShuffler:
         m = model.clone()
 
         def token_shuffle_attention(q, k, v, extra_options=None, mask=None, **kwargs):
-            # extract timestep ONCE for perms
+            # extract timestep ONCE
             seed_val = _extract_timestep_seed(extra_options)
             if seed_val is None:
+                # fall back to vanilla attention
                 return _vanilla_attention(q, k, v, mask)
-            
-            # Disable shuffle during late denoising (high timesteps)
-            raw_timestep = None
-            if extra_options is not None:
-                for key in ("timestep", "timesteps"):
-                    if key in extra_options and extra_options[key] is not None:
-                        fv = extra_options[key]
-                        if isinstance(fv, torch.Tensor):
-                            fv = fv.flatten()[0].item()
-                        raw_timestep = float(fv)
-                        break
-            
-            # Skip shuffle if timestep > 900 (last 10% of typical diffusion)
-            if raw_timestep is not None and raw_timestep > 900:
-                return _vanilla_attention(q, k, v, mask)
-        
-            # derive gate from higher-res float (timestep/sigma) instead of the int
-            gate_seed = None
-            if extra_options is not None:
-                for key in ("timestep", "timesteps", "sigma", "sigmas"):
-                    if key in extra_options and extra_options[key] is not None:
-                        fv = extra_options[key]
-                        if isinstance(fv, torch.Tensor):
-                            fv = fv.flatten()[0].item()
-                        # bucket more finely than int(...)
-                        gate_seed = int(float(fv) * 1000.0) % (2**31)
-                        break
-            if gate_seed is None:
-                gate_seed = seed_val  # fallback
-        
-            gate = _det_rand_from_seed(gate_seed, 0)
+
+            # deterministic gate tied to timestep
+            gate = _det_rand_from_seed(seed_val, 0)
             if gate >= shuffle_prob or shuffle_strength <= 0.0:
+                # requirement: don't build perms / don't do extra work on the prob-miss path
                 return _vanilla_attention(q, k, v, mask)
 
             # build index perms
@@ -220,7 +191,7 @@ class TokenShuffler:
             except Exception:
                 pass
 
-        # 2) input block 2 (d2) – exclude 2.0 and 2.1
+        # 2) input block 2 (d2) — exclude 2.0 and 2.1
         # we try a few transformer indices; 0/1 excluded
         for tidx in (2, 3, 4, 5):
             try:
@@ -235,7 +206,7 @@ class TokenShuffler:
             except Exception:
                 pass
 
-        # 3) input block 3 (d3) – patch all common transformer indices
+        # 3) input block 3 (d3) — patch all common transformer indices
         for tidx in (0, 1, 2, 3, 4):
             try:
                 mo = comfy.model_patcher.set_model_options_patch_replace(
@@ -260,8 +231,4 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "TokenShuffler": "Token Shuffler",
 }
-
-
-
-
 
