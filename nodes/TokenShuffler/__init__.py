@@ -75,7 +75,7 @@ class TokenShuffler:
                 "model": ("MODEL",),
                 "shuffle_prob": (
                     "FLOAT",
-                    {"default": 0.5, "min": 0.0, "max": 1.0, "step": 0.01},
+                    {"default": 1.0, "min": 0.0, "max": 1.0, "step": 0.01},
                 ),
                 "shuffle_strength": (
                     "FLOAT",
@@ -231,4 +231,5 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "TokenShuffler": "Token Shuffler",
 }
+
 
