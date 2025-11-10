@@ -61,7 +61,7 @@ def _apply_perm_indexed(x: torch.Tensor, perm: torch.Tensor, strength: float) ->
 
 class TokenShuffler:
     """
-    SDXL-ish layout:
+    SDXL layout:
       - patch middle
       - patch input 2 (d2) except 2.0 and 2.1
       - patch input 3 (d3)
@@ -104,7 +104,7 @@ class TokenShuffler:
                 # requirement: don't build perms / don't do extra work on the prob-miss path
                 return _vanilla_attention(q, k, v, mask)
 
-            # now we know we shuffle -> build index perms
+            # build index perms
             if q.dim() == 3:
                 # (bh, t, d)
                 bh, tq, d = q.shape
@@ -231,3 +231,4 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "TokenShuffler": "Token Shuffler",
 }
+
