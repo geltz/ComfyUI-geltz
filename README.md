@@ -61,7 +61,10 @@
   Matches CFG frequency to the clean condition to avoid overdriving guidance when prompts are strong.
 
 * **SADA Acceleration**    
-  Skips diffusion steps based on trajectory stability, following the idea in [Stability-guided Adaptive Diffusion Acceleration](https://arxiv.org/abs/2507.17135). Aims to reduce steps while preserving the intended look.  
+  Skips diffusion steps based on trajectory stability, following the idea in [Stability-guided Adaptive Diffusion Acceleration](https://arxiv.org/abs/2507.17135). Aims to reduce steps while preserving structure.
+
+* **Token Shuffler**    
+  Patches UNet attention to deterministically shuffle tokens per timestep, with configurable probability and strength.    
 
 ## Schedulers
 
@@ -81,6 +84,7 @@
 
 * **Token Sculptor**    
   Adjusts CLIP embeddings toward soft top‑k neighbors, inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI), to fine‑tune how text concepts appear in the final image.
+
 
 
 
