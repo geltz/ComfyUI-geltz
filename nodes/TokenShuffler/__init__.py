@@ -102,6 +102,8 @@ class TokenShuffler:
     def patch(self, model, shuffle_prob=0.5, shuffle_strength=1.0):
         m = model.clone()
 
+        start_perm_epoch()
+
         def token_shuffle_attention(q, k, v, extra_options=None, mask=None, **kwargs):
             # extract timestep ONCE
             seed_val = _extract_timestep_seed(extra_options)
@@ -242,6 +244,7 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "TokenShuffler": "Token Shuffler",
 }
+
 
 
 
