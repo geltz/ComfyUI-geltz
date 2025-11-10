@@ -2,8 +2,11 @@ torch
 torchvision
 pillow
 opencv-python
+numpy
 safetensors
 diffusers
 transformers
 sd-mecha
 textual
+requests
+llama-cpp-python
