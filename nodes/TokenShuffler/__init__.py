@@ -18,7 +18,10 @@ def _extract_timestep_seed(extra_options):
                 else:
                     val = val.flatten()[0].item()
             try:
-                return int(float(val)) % (2**31)
+                # Clamp to buckets of 10 to avoid float drift
+                raw = int(float(val))
+                clamped = (raw // 10) * 10
+                return clamped % (2**31)
             except Exception:
                 return None
     return None
@@ -231,4 +234,5 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "TokenShuffler": "Token Shuffler",
 }
+
 
