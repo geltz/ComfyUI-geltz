@@ -111,15 +111,13 @@ class TokenShuffler:
                 return q
 
         def token_shuffle_attention(q, k, v, extra_options=None, mask=None, **kwargs):
-            # extract timestep ONCE
             seed_val = _extract_timestep_seed(extra_options)
             if seed_val is None:
                 return _vanilla_attention(q, k, v, mask)
-
-            # deterministic gate tied to timestep
-            gate = _det_rand_from_seed(seed_val, 0)
-            if gate >= shuffle_prob or shuffle_strength <= 0.0:
-                # don't do extra work on the miss path
+        
+            sigma = extra_options.get("sigma") if extra_options else None
+            # skip late steps entirely
+            if sigma is not None and sigma < 0.2:
                 return _vanilla_attention(q, k, v, mask)
 
             # build index perms fresh every time (no cache)
@@ -147,9 +145,11 @@ class TokenShuffler:
                 k_perm = _get_perm_indices(tk, k.device, k.dtype, seed_val, 37)
                 v_perm = _get_perm_indices(tv, v.device, v.dtype, seed_val, 59)
 
-                q = _apply_perm_indexed(q, q_perm, shuffle_strength)
-                k = _apply_perm_indexed(k, k_perm, shuffle_strength)
-                v = _apply_perm_indexed(v, v_perm, shuffle_strength)
+                perm = _get_perm_indices(tq, q.device, q.dtype, seed_val, 17)
+                
+                q = _apply_perm_indexed(q, perm, shuffle_strength)
+                k = _apply_perm_indexed(k, perm, shuffle_strength)
+                v = _apply_perm_indexed(v, perm, shuffle_strength)
             else:
                 # unknown layout -> just do vanilla
                 return _vanilla_attention(q, k, v, mask)
@@ -223,3 +223,4 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "TokenShuffler": "Token Shuffler",
 }
+
