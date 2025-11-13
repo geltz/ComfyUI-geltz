@@ -2,8 +2,8 @@
 - **Apply LUT** – Applies color lookup tables (.cube files)  
 - **Chromatic Aberration** – Shifts RGB channels for lens-like effects  
 - **Color Palette Extractor** – Finds dominant colors and exports a palette  
-- **FidelityFX Upscaler** – AMD-based upscaling with sharpness controls  
-- **Kuwahara Filter** – Edge-aware smoothing for stylized looks  
+- **FidelityFX Upscaler** – Sharp upscaler, useful at a second-upscale pass
+- **Kuwahara Filter** – Edge-aware smoothing to reduce noise and stylize an image    
 - **L₀ Smoothing** – Smooths textures while keeping edges sharp  
 - **Local Laplacian** – Enhances contrast and details without halos  
 - **Palette Filter** – Transfers color grading from a reference image  
@@ -34,6 +34,7 @@
 - **Danbooru Tags Transformer** – Transforms tags for anime-style generation  
 - **Structured Latent** – Creates seeded starting images  
 - **Token Sculptor** – Fine-tunes how text concepts appear in the image via top-k neighbors
+
 
 
 
