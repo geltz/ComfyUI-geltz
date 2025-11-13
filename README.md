@@ -1,5 +1,3 @@
-Here's a simplified version of the README:
-
 ## Image Processing
 - **Apply LUT** – Applies color lookup tables (.cube files)  
 - **Chromatic Aberration** – Shifts RGB channels for lens-like effects  
@@ -36,3 +34,4 @@ Here's a simplified version of the README:
 - **Danbooru Tags Transformer** – Transforms tags for anime-style generation  
 - **Structured Latent** – Creates seeded starting images  
 - **Token Sculptor** – Fine-tunes how text concepts appear in the image via top-k neighbors
+
