@@ -13,7 +13,7 @@
 ## Metadata & Utilities  
 - **Kohya LoRA Config** – Converts LoRA headers to JSON for training with [Kohya](https://github.com/kohya-ss/sd-scripts)
 - **Load Image With Metadata** – Loads images with their context and masks  
-- **Token Visualizer** – Shows which parts of the prompt influence the output  
+- **Token Visualizer** – Renders a spiked wave with viridis-like coloring to see how tokens are weighted  
 
 ## Model & LoRA
 - **Load LoRA (SDXL Blocks)** – Applies SDXL LoRAs with per-block control  
@@ -33,6 +33,7 @@
 - **Danbooru Tags Transformer** – Single-node implementation of [DART](https://github.com/p1atdev/danbooru-tags-transformer), which generates danbooru tags
 - **Structured Latent** – Creates seeded starting images using various noise methods    
 - **Token Sculptor** – Fine-tunes how text concepts appear in the image via top-k neighbors, based on [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI)
+
 
 
 
