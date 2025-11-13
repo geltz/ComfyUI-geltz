@@ -7,7 +7,7 @@
   Shifts the red, green, and blue channels separately to create controlled edge fringing. Good for adding a subtle lens-like imperfection without blurring the whole frame.    
 
 * **Color Palette Extractor**    
-  Finds a specified number of dominant colors in an image and exports both a small reference image and a CSV palette, so other steps in the pipeline can stay on the same color scheme.    
+  Finds a specified number of dominant colors in an image and exports both a small reference image and a CSV palette.
 
 * **FidelityFX Upscaler**    
   AMD CAS–based upscaling with scale and sharpness controls. Lets you render at a lower resolution and recover detail on output.
@@ -84,6 +84,7 @@
 
 * **Token Sculptor**    
   Adjusts CLIP embeddings toward soft top‑k neighbors, inspired by [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI), to fine‑tune how text concepts appear in the final image.
+
 
 
 
