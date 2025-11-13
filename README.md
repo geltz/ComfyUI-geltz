@@ -21,7 +21,7 @@
 - **LoRA Extract** – Creates a LoRA by comparing the difference between two models using [sd-mecha](https://github.com/ljleb/sd-mecha)
 
 ## Sampling & Guidance
-- **Perturbed Attention Delta** – Adds a second forward pass during generation via injected noise and reverses the path (based on [PAG](https://arxiv.org/abs/2403.17377))
+- **Perturbed Attention Delta** – Adds a second forward pass during generation via injected noise and reverses the path, based on [PAG](https://arxiv.org/abs/2403.17377)
 - **Quantile Match Scaling** – Prevents over-guidance with strong prompts  
 - **SADA Acceleration** – Skips stable steps to speed up generation based on [this paper](https://arxiv.org/abs/2507.17135) 
 - **Token Shuffler** – Shuffles tokens during generation for better denoising path    
@@ -34,6 +34,7 @@
 - **Danbooru Tags Transformer** – Transforms tags for anime-style generation  
 - **Structured Latent** – Creates seeded starting images  
 - **Token Sculptor** – Fine-tunes how text concepts appear in the image via top-k neighbors
+
 
 
 
