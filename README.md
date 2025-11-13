@@ -6,12 +6,11 @@
 - **Kuwahara Filter** – Edge-aware smoothing to reduce noise and stylize an image    
 - **L₀ Smoothing** – Smooths textures while keeping edges sharp  
 - **Local Laplacian** – Enhances contrast and details without halos  
-- **Palette Filter** – Transfers color grading from a reference image  
+- **Palette Filter** – Transfers color grading from a reference image with an optimal transport      
 - **Temperature Adjust** – Adjusts white balance while preserving saturation  
-- **UNet Heatmap** – Shows where the AI model focuses during generation  
+- **UNet Heatmap** – Creates a heatmap image of a denoised UNet latent   
 
-## Metadata & Utilities
-- **Image Metadata Extractor** – Reads image metadata for reproducibility  
+## Metadata & Utilities  
 - **Kohya LoRA Config** – Converts LoRA headers to JSON for training with [Kohya](https://github.com/kohya-ss/sd-scripts)
 - **Load Image With Metadata** – Loads images with their context and masks  
 - **Token Visualizer** – Shows which parts of the prompt influence the output  
@@ -33,7 +32,7 @@
 ## Latent & Prompt
 - **Danbooru Tags Transformer** – Transforms tags for anime-style generation  
 - **Structured Latent** – Creates seeded starting images  
-- **Token Sculptor** – Fine-tunes how text concepts appear in the image via top-k neighbors
+- **Token Sculptor** – Fine-tunes how text concepts appear in the image via top-k neighbors, based on [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI)
 
 
 
