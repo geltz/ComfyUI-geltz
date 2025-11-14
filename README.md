@@ -2,8 +2,8 @@
 - **Apply LUT** – Applies color lookup tables (.cube files)  
 - **Chromatic Aberration** – Shifts RGB channels for lens-like effects  
 - **Color Palette Extractor** – Finds dominant colors and exports a palette  
-- **FidelityFX Upscaler** – Sharp upscaler, useful at a second-upscale pass
-- **Kuwahara Filter** – Edge-aware smoothing to reduce noise and stylize an image    
+- **FidelityFX Upscaler** – Sharp upscaler, useful as a second-upscale pass
+- **Kuwahara Filter** – Edge-aware smoothing to reduce noise and stylize     
 - **L₀ Smoothing** – Smooths textures while keeping edges sharp  
 - **Local Laplacian** – Enhances contrast and details without halos  
 - **Palette Filter** – Transfers color grading from a reference image with an optimal transport      
@@ -33,6 +33,7 @@
 - **Danbooru Tags Transformer** – Single-node implementation of [DART](https://github.com/p1atdev/danbooru-tags-transformer), which generates danbooru tags
 - **Structured Latent** – Creates seeded starting images using various noise methods    
 - **Token Sculptor** – Fine-tunes tokens via top-k neighbors, based on [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI)
+
 
 
 
