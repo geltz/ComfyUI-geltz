@@ -21,7 +21,7 @@
 
 ## Sampling & Guidance
 - **Perturbed Attention Delta** – Adds a second forward pass during generation via injected noise, based on [PAG](https://arxiv.org/abs/2403.17377)
-- **Quantile Match Scaling** – Prevents over-guidance with strong prompts  
+- **Quantile Match Scaling** – Prevents over-guidance with FFT quantile filters
 - **SADA Acceleration** – Skips stable steps to speed up generation based on [this paper](https://arxiv.org/abs/2507.17135) 
 - **Token Shuffler** – Shuffles tokens during generation for better denoising path    
 
@@ -33,6 +33,7 @@
 - **Danbooru Tags Transformer** – Single-node implementation of [DART](https://github.com/p1atdev/danbooru-tags-transformer), which generates danbooru tags
 - **Structured Latent** – Creates seeded starting images using various noise methods    
 - **Token Sculptor** – Fine-tunes tokens via top-k neighbors, based on [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI)
+
 
 
 
