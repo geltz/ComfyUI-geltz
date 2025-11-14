@@ -9,4 +9,3 @@ transformers
 sd-mecha
 textual
 requests
-llama-cpp-python
