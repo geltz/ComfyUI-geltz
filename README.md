@@ -26,12 +26,14 @@
 - **Token Shuffler** – Shuffles tokens during generation for better denoising path    
 
 ## Schedulers
-- **Cosine** – Steady denoising schedule in cosine-eased timestep space    
+- **Cosine** – Steady denoising schedule in cosine-eased timestep space
+- **Sigmoid** – Configurable steepness and center point for controlled denoising curves    
 
 ## Latent & Prompt
 - **Danbooru Tags Transformer** – Single-node implementation of [DART](https://github.com/p1atdev/danbooru-tags-transformer), which generates danbooru tags
 - **Structured Latent** – Creates seeded starting images using various noise methods    
 - **Token Sculptor** – Fine-tunes how text concepts appear in the image via top-k neighbors, based on [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI)
+
 
 
 
