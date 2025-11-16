@@ -1,6 +1,7 @@
 ## Image Processing
 - **Apply LUT** – Applies color lookup tables (.cube files)  
-- **Chromatic Aberration** – Shifts RGB channels for lens-like effects  
+- **Chromatic Aberration** – Shifts RGB channels for lens-like effects
+- **Color Border** – Apply a border with adjustable width and color to an image    
 - **Color Palette Extractor** – Finds dominant colors and exports a palette
 - **Diffusion Denoiser** – Removes noise from generated images with a bilateral filter (accepts batch folder input)    
 - **FidelityFX Upscaler** – Sharp upscaler, useful as a second-upscale pass
@@ -35,6 +36,7 @@
 - **Prompt Shuffler** – Shuffles order of comma-separated tokens using a random seed    
 - **Structured Latent** – Creates seeded empty latents using various noise methods    
 - **Token Sculptor** – Fine-tunes tokens via top-k neighbors, based on [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI)
+
 
 
 
