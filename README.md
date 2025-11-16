@@ -25,7 +25,7 @@
 - **Perturbed Attention Delta** – Adds a second forward pass during generation via injected noise, based on [PAG](https://arxiv.org/abs/2403.17377)
 - **Quantile Match Scaling** – Prevents over-guidance with FFT quantile filters
 - **SADA Acceleration** – Skips stable steps to speed up generation based on [this paper](https://arxiv.org/abs/2507.17135)
-- **Semantic Noise Sampler** – Samples better starting noise by analyzing model semantics. It requires a full pass before denoising, so twice the steps. Based on [this paper](https://arxiv.org/abs/2511.07756)   
+- **Semantic Noise Sampler** – Finds better sampling noise by analyzing model semantics. Requires a full pass before denoising, so twice the steps. Based on [this paper](https://arxiv.org/abs/2511.07756)   
 - **Token Shuffler** – Shuffles tokens during generation for better denoising path    
 
 ## Schedulers
@@ -37,6 +37,7 @@
 - **Prompt Shuffler** – Shuffles order of comma-separated tokens using a random seed    
 - **Structured Latent** – Creates seeded empty latents using various noise methods    
 - **Token Sculptor** – Fine-tunes tokens via top-k neighbors, based on [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI)
+
 
 
 
