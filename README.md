@@ -36,10 +36,13 @@
 
 ## Latent & Prompt
 - **Danbooru Tags Transformer** – Single-node implementation of [DART](https://github.com/p1atdev/danbooru-tags-transformer), which generates danbooru tags
-- **Prompt Shuffler** – Shuffles order of comma-separated tokens using a random seed    
-- **Structured Latent** – Creates seeded empty latents using various noise methods    
+- **Dynamic Random Tokens** – Handles nested syntax like {color {red|blue}|texture} for randomized token selection in a prompt		
+- **Prompt Shuffler** – Shuffles order of comma-separated tokens using a random seed
 - **Token Sculptor** – Fine-tunes tokens via top-k neighbors, based on [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI)
-- **Reflection Padding** – Adds reflection padding to conv2d layers on the VAE decoding. Use with models that have an [EQ-VAE](https://arxiv.org/abs/2502.09509).    
+- **Reflection Padding** – Adds reflection padding to conv2d layers on the VAE decoding. Use with models that have an [EQ-VAE](https://arxiv.org/abs/2502.09509)
+- **Simple Inpaint** – Auto-resizes masks and latent dimensions for inpainting		  
+- **Structured Latent** – Creates seeded empty latents using various noise methods      
+
 
 
 
