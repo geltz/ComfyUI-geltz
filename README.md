@@ -27,7 +27,7 @@
 | **Reflection Padding** | Add reflection padding to Conv2D layers (requires EQ-VAE models). |
 | **Simple Inpaint** | Auto-resize masks and latent dimensions for inpainting tasks. |
 | **Structured Latent** | Create seeded empty latents using various noise methods. |
-| **Token Sculptor** | Fine-tune tokens via top-k neighbors (based on Vector Sculptor). |
+| **Token Sculptor** | Fine-tune tokens via top-k neighbors (based on [Vector Sculptor](https://github.com/Extraltodeus/Vector_Sculptor_ComfyUI)). |
 
 ## Sampling & Guidance
 
@@ -60,6 +60,7 @@
 | :--- | :--- |
 | **Cosine** | Steady denoising using cosine-eased timestep space. |
 | **Sigmoid** | Configurable steepness and center point for controlled denoising curves. |
+
 
 
 
