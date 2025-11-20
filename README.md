@@ -21,7 +21,7 @@
 
 | Name | Description |
 | :--- | :--- |
-| **Danbooru Tags Transformer** | Implementation of DART for generating Danbooru tags. |
+| **Danbooru Tags Transformer** | Implementation of [DART](https://huggingface.co/p1atdev/dart-v2-moe-sft) for generating Danbooru tags. |
 | **Dynamic Random Tokens** | Global patch that enables nested random tokens e.g. {{red\|green\|blue}hair}. |
 | **Prompt Shuffler** | Randomize the order of comma-separated tokens using a seed. |
 | **Reflection Padding** | Add reflection padding to Conv2D layers (requires EQ-VAE models). |
@@ -33,9 +33,9 @@
 
 | Name | Description |
 | :--- | :--- |
-| **Perturbed Attention Delta** | Inject noise during forward pass (based on PAG). |
+| **Perturbed Attention Delta** | Inject noise during forward pass (based on [PAG](https://arxiv.org/abs/2403.17377)). |
 | **Quantile Match Scaling** | FFT quantile filters to prevent over-guidance. |
-| **SADA Acceleration** | Skip stable steps to speed up generation. |
+| **SADA Acceleration** | Skip stable steps to speed up generation. [Paper](https://arxiv.org/abs/2507.17135). |
 | **Semantic Noise Sampler** | Analyze model semantics to find optimal sampling noise (requires extra pass). |
 | **Token Shuffler** | Shuffle tokens during generation to alter denoising paths. |
 
@@ -44,13 +44,13 @@
 | Name | Description |
 | :--- | :--- |
 | **Load LoRA (SDXL Blocks)** | Apply SDXL LoRAs with specific per-block control. |
-| **LoRA Extract** | Create a LoRA by calculating the difference between two models. |
+| **LoRA Extract** | Create a LoRA by calculating the difference between two models. Uses [sd-mecha](https://github.com/ljleb/sd-mecha). |
 
 ## Metadata & Utilities
 
 | Name | Description |
 | :--- | :--- |
-| **Kohya LoRA Config** | Convert LoRA headers to JSON for Kohya training. |
+| **Kohya LoRA Config** | Convert LoRA headers to JSON for [Kohya](https://github.com/kohya-ss/sd-scripts) training. |
 | **Load Image (Metadata)** | Load images including their generation context and masks. |
 | **Token Visualizer** | Render spiked waves to visualize token weighting. |
 
@@ -60,6 +60,7 @@
 | :--- | :--- |
 | **Cosine** | Steady denoising using cosine-eased timestep space. |
 | **Sigmoid** | Configurable steepness and center point for controlled denoising curves. |
+
 
 
 
