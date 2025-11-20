@@ -21,7 +21,7 @@
 
 | Name | Description |
 | :--- | :--- |
-| **Danbooru Tags** | Implementation of DART for generating Danbooru tags. |
+| **Danbooru Tags Transformer** | Implementation of DART for generating Danbooru tags. |
 | **Dynamic Random Tokens** | Global patch that enables nested random tokens e.g. {{red\|green\|blue}hair}. |
 | **Prompt Shuffler** | Randomize the order of comma-separated tokens using a seed. |
 | **Reflection Padding** | Add reflection padding to Conv2D layers (requires EQ-VAE models). |
@@ -60,5 +60,6 @@
 | :--- | :--- |
 | **Cosine** | Steady denoising using cosine-eased timestep space. |
 | **Sigmoid** | Configurable steepness and center point for controlled denoising curves. |
+
 
 
