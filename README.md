@@ -17,7 +17,7 @@
 | **UNet Heatmap** | Generate a heatmap visualization of a denoised UNet latent. |
 | **Voronoi Tessellation** | Create Voronoi segments from an image with adjustable sizing. |
 
-## Latent & Prompt Utilities
+## Latent & Prompt
 
 | Name | Description |
 | :--- | :--- |
@@ -39,14 +39,14 @@
 | **Semantic Noise Sampler** | Analyze model semantics to find optimal sampling noise (requires extra pass). |
 | **Token Shuffler** | Shuffle tokens during generation to alter denoising paths. |
 
-## Model & LoRA
+## Model
 
 | Name | Description |
 | :--- | :--- |
 | **Load LoRA (SDXL Blocks)** | Apply SDXL LoRAs with specific per-block control. |
 | **LoRA Extract** | Create a LoRA by calculating the difference between two models. Uses [sd-mecha](https://github.com/ljleb/sd-mecha). |
 
-## Metadata & Utilities
+## Metadata
 
 | Name | Description |
 | :--- | :--- |
@@ -60,6 +60,7 @@
 | :--- | :--- |
 | **Cosine** | Steady denoising using cosine-eased timestep space. |
 | **Sigmoid** | Configurable steepness and center point for controlled denoising curves. |
+
 
 
 
