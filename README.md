@@ -22,7 +22,7 @@
 | Name | Description |
 | :--- | :--- |
 | **Danbooru Tags** | Implementation of DART for generating Danbooru tags. |
-| **Dynamic Random Tokens** | *Global Patch:* Enables nested syntax (e.g., `{red|blue}`) for randomized prompts. |
+| **Dynamic Random Tokens** | Global patch that enables nested random tokens; {{red\|green\|blue}hair} |
 | **Prompt Shuffler** | Randomize the order of comma-separated tokens using a seed. |
 | **Reflection Padding** | Add reflection padding to Conv2D layers (requires EQ-VAE models). |
 | **Simple Inpaint** | Auto-resize masks and latent dimensions for inpainting tasks. |
@@ -60,3 +60,4 @@
 | :--- | :--- |
 | **Cosine** | Steady denoising using cosine-eased timestep space. |
 | **Sigmoid** | Configurable steepness and center point for controlled denoising curves. |
+
