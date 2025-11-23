@@ -37,7 +37,7 @@
 | **Quantile Match Scaling** | FFT quantile filters to prevent over-guidance. |
 | **SADA Acceleration** | Skip stable steps to speed up generation. [Paper](https://arxiv.org/abs/2507.17135). |
 | **Semantic Noise Sampler** | Analyze model semantics to find optimal sampling noise (requires extra pass). |
-| **Token Shuffler** | Shuffle tokens during generation to improve denoising. |
+| **Token Shuffler** | Timestep-aware cross-attention shuffling to improve UNet diffusion. |
 
 ## Model
 
@@ -60,6 +60,7 @@
 | :--- | :--- |
 | **Cosine** | Steady denoising using cosine-eased timestep space. |
 | **Sigmoid** | Configurable steepness and center point for controlled denoising curves. |
+
 
 
 
