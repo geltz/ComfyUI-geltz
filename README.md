@@ -33,7 +33,7 @@
 
 | Name | Description |
 | :--- | :--- |
-| **Perturbed Attention Delta** | Alters attention values during forward pass. (based on [PAG](https://arxiv.org/abs/2403.17377)). |
+| **Perturbed Attention Delta** | Alters values during forward pass for enhanced diffusion. (based on [PAG](https://arxiv.org/abs/2403.17377)). |
 | **Quantile Match Scaling** | FFT quantile filters to prevent over-guidance. |
 | **SADA Acceleration** | Skip stable steps to speed up generation. [Paper](https://arxiv.org/abs/2507.17135). |
 | **Semantic Noise Sampler** | Analyze model semantics to find optimal sampling noise (requires extra pass). |
@@ -60,6 +60,7 @@
 | :--- | :--- |
 | **Cosine** | Steady denoising using cosine-eased timestep space. |
 | **Sigmoid** | Configurable steepness and center point for controlled denoising curves. |
+
 
 
 
