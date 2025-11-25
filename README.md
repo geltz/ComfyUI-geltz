@@ -43,6 +43,7 @@
 
 | Name | Description |
 | :--- | :--- |
+| **LoRA Extract** | Extract the difference between the models as a LoRA.   |
 | **Load LoRA (SDXL Blocks)** | Apply SDXL LoRAs with specific per-block control. |
 
 ## Metadata
@@ -59,6 +60,7 @@
 | :--- | :--- |
 | **Cosine** | Steady denoising using cosine-eased timestep space. |
 | **Sigmoid** | Configurable steepness and center point for controlled denoising curves. |
+
 
 
 
