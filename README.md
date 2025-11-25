@@ -44,7 +44,6 @@
 | Name | Description |
 | :--- | :--- |
 | **Load LoRA (SDXL Blocks)** | Apply SDXL LoRAs with specific per-block control. |
-| **LoRA Extract** | Create a LoRA by calculating the difference between two models. Uses [sd-mecha](https://github.com/ljleb/sd-mecha). |
 
 ## Metadata
 
@@ -60,6 +59,7 @@
 | :--- | :--- |
 | **Cosine** | Steady denoising using cosine-eased timestep space. |
 | **Sigmoid** | Configurable steepness and center point for controlled denoising curves. |
+
 
 
 
