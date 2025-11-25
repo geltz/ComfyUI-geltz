@@ -42,7 +42,7 @@ def hijacked_encode(self, clip, text):
     return original_encode(self, clip, new_text)
 
 # 4. Apply the patch (Monkey Patching)
-print("\033[92m[Global Patch] Enabled {word|word} syntax support.\033[0m")
+print("\033[94m[geltz] enabled {word|word} syntax support\033[00m")
 nodes.CLIPTextEncode.encode = hijacked_encode
 
 # Standard ComfyUI node mappings (required file structure, even if empty)
