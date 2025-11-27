@@ -58,8 +58,8 @@
 
 | Name | Description |
 | :--- | :--- |
-| **Cosine** | Steady denoising using cosine-eased timestep space. |
-| **Sigmoid** | Configurable steepness and center point for controlled denoising curves. |
+| **Cosine** | Steady denoising using cosine-eased timestep space. |  
+
 
 
 
