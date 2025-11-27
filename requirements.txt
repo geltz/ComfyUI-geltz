@@ -6,6 +6,4 @@ numpy
 safetensors
 diffusers
 transformers
-sd-mecha
-textual
 requests
