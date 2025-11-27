@@ -6,7 +6,7 @@ class FlowMaskingEmbeds:
         return {
             "required": {
                 "model": ("MODEL",),
-                "drop_probability": ("FLOAT", {"default": 0.1, "min": 0.0, "max": 1.0, "step": 0.01}),
+                "drop_probability": ("FLOAT", {"default": 0.25, "min": 0.0, "max": 1.0, "step": 0.01}),
                 "seed": ("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff}),
             },
             "optional": {
@@ -93,4 +93,5 @@ NODE_CLASS_MAPPINGS = {
 
 NODE_DISPLAY_NAME_MAPPINGS = {
     "FlowMaskingEmbeds": "Flow Masking (Embeds)"
+
 }
