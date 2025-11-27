@@ -11,7 +11,7 @@ class FlowMaskingEmbeds:
             },
             "optional": {
                 "start_percent": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 1.0, "step": 0.01}),
-                "end_percent": ("FLOAT", {"default": 0.6, "min": 0.0, "max": 1.0, "step": 0.01}),
+                "end_percent": ("FLOAT", {"default": 0.5, "min": 0.0, "max": 1.0, "step": 0.01}),
             }
         }
 
@@ -95,3 +95,4 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "FlowMaskingEmbeds": "Flow Masking (Embeds)"
 
 }
+
