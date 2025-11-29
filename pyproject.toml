@@ -1,6 +1,6 @@
 [project]
-name = "comfyui-geltz"
-description = "Image processing, LoRA metadata, schedulers, guidance, latents."
+name = "comfy-geltz"
+description = "Image processing, LoRA metadata, guidance."
 version = "1.0.0"
 license = { file = "LICENSE" }
 
