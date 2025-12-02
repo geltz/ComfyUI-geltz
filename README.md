@@ -33,7 +33,7 @@
 
 | Name | Description |
 | :--- | :--- |
-| **Gaussian Mask** | This adds random noise to embeddings during generation for enhanced variety. Uses Gaussian noise and Bernoulli masks. |
+| **Gaussian Mask** | This adds random noise to embeddings during generation for enhanced variety. |
 | **Perturbed Attention Delta** | Alters values during forward pass for enhanced diffusion. (based on [PAG](https://arxiv.org/abs/2403.17377)). |
 | **Quantile Match Scaling** | FFT quantile filters to prevent over-guidance. |
 | **SADA Acceleration** | Skip stable steps to speed up generation. [Paper](https://arxiv.org/abs/2507.17135). |
@@ -60,6 +60,7 @@
 | Name | Description |
 | :--- | :--- |
 | **Cosine** | Steady denoising using cosine-eased timestep space. |  
+
 
 
 
