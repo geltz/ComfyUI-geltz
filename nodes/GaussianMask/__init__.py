@@ -11,9 +11,9 @@ class GaussianMask:
             "required": {
                 "conditioning": ("CONDITIONING",),
                 "randomize_percent": ("FLOAT", {"default": 50.0, "min": 0.0, "max": 100.0, "step": 1, "tooltip": "Percentage of embedding values to modify."}),
-                "strength": ("FLOAT", {"default": 20, "min": 0.0, "max": 10000.0, "step": 0.01, "tooltip": "Scale of the random noise."}),
+                "strength": ("FLOAT", {"default": 20, "min": 0.0, "max": 1000.0, "step": 0.1, "tooltip": "Scale of the random noise."}),
                 "noise_insert": (["noise on beginning steps", "noise on ending steps", "noise on all steps"],),
-                "steps_switchover_percent": ("FLOAT", {"default": 20.0, "min": 0.0, "max": 100.0, "step": 1, "tooltip": "Percentage of steps before switching conditioning."}),
+                "steps_switchover_percent": ("FLOAT", {"default": 5.0, "min": 0.0, "max": 100.0, "step": 1, "tooltip": "Percentage of steps before switching conditioning."}),
                 "seed": ("INT", {"default": 1, "min": 0, "max": 0xFFFFFFFF, "step": 1})
             }
         }
