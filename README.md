@@ -23,6 +23,7 @@
 | :--- | :--- |
 | **Danbooru Tags Transformer** | Implementation of [DART](https://huggingface.co/p1atdev/dart-v2-moe-sft) for generating Danbooru tags. |
 | **Dynamic Random Tokens** | Global patch that enables nested random tokens e.g. {{red\|green\|blue}hair}. |
+| **Interpolate Conditioning** | Alternates between two prompts with a sine wave. |
 | **Prompt Shuffler** | Randomize the order of comma-separated tokens using a seed. |
 | **Reflection Padding** | Add reflection padding to Conv2D layers (requires EQ-VAE models). |
 | **Simple Inpaint** | Auto-resize masks and latent dimensions for inpainting tasks. |
@@ -59,6 +60,7 @@
 | Name | Description |
 | :--- | :--- |
 | **Cosine** | Steady denoising using cosine-eased timestep space. |  
+
 
 
 
